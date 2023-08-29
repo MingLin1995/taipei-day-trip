@@ -1,11 +1,11 @@
 SHOW DATABASES; 
-CREATE DATABASE TP_data; 
+/*CREATE DATABASE TP_data; */
 
 USE TP_data; 
 SHOW TABLES;
 
-#刪除刪除刪除不要誤點
-DROP DATABASE TP_data; 
+# 刪除刪除刪除不要誤點
+/*DROP DATABASE TP_data; */
 
 CREATE TABLE attractions (
     id INT AUTO_INCREMENT PRIMARY KEY,
