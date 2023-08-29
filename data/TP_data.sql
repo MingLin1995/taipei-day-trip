@@ -1,4 +1,3 @@
-mysqldump: [Warning] Using a password on the command line interface can be insecure.
 -- MySQL dump 10.13  Distrib 8.0.34, for Linux (x86_64)
 --
 -- Host: localhost    Database: TP_data
@@ -83,4 +82,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-29 12:55:35
+-- Dump completed on 2023-08-29 22:29:28
