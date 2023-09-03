@@ -11,7 +11,7 @@ CREATE TABLE attractions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
     category VARCHAR(255),
-    description TEXT,
+    description TEXT, /*可以存6.4萬個字元*/
     address VARCHAR(255),
     transport TEXT,
     mrt VARCHAR(255),
@@ -46,7 +46,7 @@ JOIN
     images i ON a.id = i.attraction_id
 GROUP BY
     a.id /*依照id去分組，再將圖片網址合併*/
-LIMIT 24, 12; /*從查詢結果的第25筆記錄開始，顯示12筆*/
+LIMIT 24, 12; /*從結果的index 24開始(第25筆)取資料，顯示12筆*/
 
 /*關鍵字查詢*/
 SELECT
@@ -91,11 +91,13 @@ WHERE
 
 
 /*捷運查詢*/
+/*先查詢各個捷運站出現的次數*/
 SELECT a.mrt, COUNT(*) AS num_attractions 
 FROM attractions a
 GROUP BY a.mrt
-ORDER BY num_attractions DESC, a.mrt; /*數量大到小，捷運名稱小到大*/
+ORDER BY num_attractions DESC, a.mrt; /*數量大到小，捷運名稱筆畫小到大*/
 
+/*降冪排列*/
 SELECT a.mrt 
 FROM attractions a
 GROUP BY a.mrt

@@ -47,7 +47,10 @@ def attractions_data():
     page = int(request.args.get("page", 0))  # 預設0，整數格式
     keyword = request.args.get("keyword", "")
     try:
-        data = get_attractions_data(page, keyword)
+        total_records = get_total_records()
+        total_records_with_keyword = get_total_records_with_keyword(keyword)
+        data = get_attractions_data(
+            page, keyword, total_records, total_records_with_keyword)
         # 回傳資料不要透過jsonify，排序會亂
         json_data = json.dumps(data)
         response = Response(
@@ -60,15 +63,52 @@ def attractions_data():
         }
         return jsonify(response), 500
 
+# 取得所有資料總數量
 
-def get_attractions_data(page, keyword):
+
+def get_total_records():
+    connection = connection_pool.get_connection()
+    cursor = connection.cursor()
+
+    total_records_query = """SELECT COUNT(id) FROM attractions"""
+    cursor.execute(total_records_query)
+    total_records = cursor.fetchone()[0]
+
+    cursor.close()
+    connection.close()
+
+    return total_records
+
+# 取得關鍵字篩選後的資料總數
+
+
+def get_total_records_with_keyword(keyword):
+    connection = connection_pool.get_connection()
+    cursor = connection.cursor()
+
+    query = """
+        SELECT COUNT(id)
+        FROM attractions
+        WHERE name LIKE %s OR mrt = %s
+    """
+    keyword_pattern = f"%{keyword}%"
+    cursor.execute(query, (keyword_pattern, keyword))
+    total_records = cursor.fetchone()[0]
+
+    cursor.close()
+    connection.close()
+
+    return total_records
+
+
+def get_attractions_data(page, keyword, total_records, total_records_with_keyword):
     connection = connection_pool.get_connection()
     cursor = connection.cursor(dictionary=True)
 
     items_per_page = 12  # 一次顯示12筆
     offset = page * items_per_page  # 從第幾項開始顯示
 
-    if keyword:
+    if keyword:  # 關鍵字搜尋
         query = """
             SELECT
                 a.id,
@@ -94,7 +134,15 @@ def get_attractions_data(page, keyword):
         keyword_pattern = f"%{keyword}%"
         cursor.execute(
             query, (keyword_pattern, keyword, offset, items_per_page))
-    else:
+        result = cursor.fetchall()
+
+        # 已顯示筆數+應顯示筆數<可顯示總筆數，就會+1，反之代表超過可以顯示的數量
+        if ((offset + items_per_page) < total_records_with_keyword):
+            next_page = page + 1
+        else:
+            next_page = None
+
+    else:  # 頁數搜尋
         query = """
             SELECT
                 a.id,
@@ -116,8 +164,12 @@ def get_attractions_data(page, keyword):
             LIMIT %s, %s
         """
         cursor.execute(query, (offset, items_per_page))
-
-    result = cursor.fetchall()
+        result = cursor.fetchall()
+        # 已顯示筆數+應顯示筆數<可顯示總筆數數，就會+1，反之代表超過可以顯示的數量
+        if ((offset + items_per_page) < total_records):
+            next_page = page + 1
+        else:
+            next_page = None
 
     data = []
 
@@ -127,9 +179,6 @@ def get_attractions_data(page, keyword):
         row["lat"] = float(row["lat"])
         row["lng"] = float(row["lng"])
         data.append(row)
-
-    # 如果資料數量大於12，就+1，如果小於就代表沒有下一頁，顯示None，Json會轉換成null
-    next_page = page + 1 if len(result) >= items_per_page else None
 
     cursor.close()
     connection.close()
