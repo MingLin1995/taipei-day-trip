@@ -61,6 +61,9 @@ def attractions_data():
         return jsonify(response), 500
 
 
+# 取得景點資料(頁數搜尋以及關鍵字搜尋)
+
+
 def get_attractions_data(page, keyword):
     connection = connection_pool.get_connection()
     cursor = connection.cursor(dictionary=True)
@@ -68,7 +71,7 @@ def get_attractions_data(page, keyword):
     items_per_page = 12  # 一次顯示12筆
     offset = page * items_per_page  # 從第幾項開始顯示
 
-    if keyword:
+    if keyword:  # 關鍵字搜尋
         query = """
             SELECT
                 a.id,
@@ -92,9 +95,11 @@ def get_attractions_data(page, keyword):
             LIMIT %s, %s
         """
         keyword_pattern = f"%{keyword}%"
-        cursor.execute(
-            query, (keyword_pattern, keyword, offset, items_per_page))
-    else:
+        cursor.execute(query, (keyword_pattern, keyword,
+                       offset, items_per_page+1))
+        result = cursor.fetchall()
+
+    else:  # 頁數搜尋
         query = """
             SELECT
                 a.id,
@@ -115,9 +120,14 @@ def get_attractions_data(page, keyword):
                 a.id
             LIMIT %s, %s
         """
-        cursor.execute(query, (offset, items_per_page))
+        cursor.execute(query, (offset, items_per_page+1))
+        result = cursor.fetchall()
 
-    result = cursor.fetchall()
+    # 用多查詢一筆的方式去判斷是否還有下一頁
+    next_page = None
+    if len(result) > items_per_page:
+        next_page = page + 1
+        result = result[:items_per_page]  # 只返回前12条数据
 
     data = []
 
@@ -127,9 +137,6 @@ def get_attractions_data(page, keyword):
         row["lat"] = float(row["lat"])
         row["lng"] = float(row["lng"])
         data.append(row)
-
-    # 如果資料數量大於12，就+1，如果小於就代表沒有下一頁，顯示None，Json會轉換成null
-    next_page = page + 1 if len(result) >= items_per_page else None
 
     cursor.close()
     connection.close()
