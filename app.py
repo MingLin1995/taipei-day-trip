@@ -47,10 +47,7 @@ def attractions_data():
     page = int(request.args.get("page", 0))  # 預設0，整數格式
     keyword = request.args.get("keyword", "")
     try:
-        total_records = get_total_records()
-        total_records_with_keyword = get_total_records_with_keyword(keyword)
-        data = get_attractions_data(
-            page, keyword, total_records, total_records_with_keyword)
+        data = get_attractions_data(page, keyword)
         # 回傳資料不要透過jsonify，排序會亂
         json_data = json.dumps(data)
         response = Response(
@@ -63,45 +60,11 @@ def attractions_data():
         }
         return jsonify(response), 500
 
-# 取得所有資料總數量
+
+# 取得景點資料(頁數搜尋以及關鍵字搜尋)
 
 
-def get_total_records():
-    connection = connection_pool.get_connection()
-    cursor = connection.cursor()
-
-    total_records_query = """SELECT COUNT(id) FROM attractions"""
-    cursor.execute(total_records_query)
-    total_records = cursor.fetchone()[0]
-
-    cursor.close()
-    connection.close()
-
-    return total_records
-
-# 取得關鍵字篩選後的資料總數
-
-
-def get_total_records_with_keyword(keyword):
-    connection = connection_pool.get_connection()
-    cursor = connection.cursor()
-
-    query = """
-        SELECT COUNT(id)
-        FROM attractions
-        WHERE name LIKE %s OR mrt = %s
-    """
-    keyword_pattern = f"%{keyword}%"
-    cursor.execute(query, (keyword_pattern, keyword))
-    total_records = cursor.fetchone()[0]
-
-    cursor.close()
-    connection.close()
-
-    return total_records
-
-
-def get_attractions_data(page, keyword, total_records, total_records_with_keyword):
+def get_attractions_data(page, keyword):
     connection = connection_pool.get_connection()
     cursor = connection.cursor(dictionary=True)
 
@@ -132,15 +95,9 @@ def get_attractions_data(page, keyword, total_records, total_records_with_keywor
             LIMIT %s, %s
         """
         keyword_pattern = f"%{keyword}%"
-        cursor.execute(
-            query, (keyword_pattern, keyword, offset, items_per_page))
+        cursor.execute(query, (keyword_pattern, keyword,
+                       offset, items_per_page+1))
         result = cursor.fetchall()
-
-        # 已顯示筆數+應顯示筆數<可顯示總筆數，就會+1，反之代表超過可以顯示的數量
-        if ((offset + items_per_page) < total_records_with_keyword):
-            next_page = page + 1
-        else:
-            next_page = None
 
     else:  # 頁數搜尋
         query = """
@@ -163,13 +120,14 @@ def get_attractions_data(page, keyword, total_records, total_records_with_keywor
                 a.id
             LIMIT %s, %s
         """
-        cursor.execute(query, (offset, items_per_page))
+        cursor.execute(query, (offset, items_per_page+1))
         result = cursor.fetchall()
-        # 已顯示筆數+應顯示筆數<可顯示總筆數數，就會+1，反之代表超過可以顯示的數量
-        if ((offset + items_per_page) < total_records):
-            next_page = page + 1
-        else:
-            next_page = None
+
+    # 用多查詢一筆的方式去判斷是否還有下一頁
+    next_page = None
+    if len(result) > items_per_page:
+        next_page = page + 1
+        result = result[:items_per_page]  # 只返回前12条数据
 
     data = []
 
