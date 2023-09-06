@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>首頁</title>
+    <link rel="stylesheet" href="../static/CSS/RESET.css" />
+    <link rel="stylesheet" href="../static/CSS/index.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="frozen">
+        <div class="navigation max-width">
+          <p>台北一日遊</p>
+          <div class="navigation-button">
+            <div class="button">預定行程</div>
+            <div class="button">登入/註冊</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-section">
+        <div class="slogan max-width">
+          <h1>輕鬆享受台北一日悠閒</h1>
+          <p>探索每個角落，體驗城市的深度旅遊行程</p>
+          <div class="search-bar">
+            <input
+              type="text"
+              class="search-input"
+              placeholder="輸入景點名稱查詢"
+            />
+            <button class="search-button" onclick="searchAttractions()">
+              <img src="../static/IMG/search.png" alt="search" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="main max-width">
+        <div class="list-bar">
+          <button class="scroll-button prev-button" onclick="scrollPrev()">
+            <div class="image-container left-arrow">
+              <img
+                src="../static/IMG/Default_left.png"
+                alt="previous"
+                class="default-image"
+              />
+              <img
+                src="../static/IMG/Hovered_left.png"
+                alt="previous"
+                class="hovered-image"
+              />
+            </div>
+          </button>
+          <ul class="list">
+            <!-- 建立對照範本
+            <li>劍潭</li>
+            <li>圓山</li>
+          --></ul>
+          <button class="scroll-button next-button" onclick="scrollNext()">
+            <div class="image-container right-arrow">
+              <img
+                src="../static/IMG/Default_right.png"
+                alt="next"
+                class="default-image"
+              />
+              <img
+                src="../static/IMG/Hovered_right.png"
+                alt="next"
+                class="hovered-image"
+              />
+            </div>
+          </button>
+        </div>
+
+        <ul class="attractions">
+          <!-- 建立對照範本
+            <li class="attraction">
+            <img src="../static/IMG/welcome.jpg" alt="" />
+            <div class="detail-1">101風景照</div>
+            <div class="detail-2">
+              <p>台北101/世貿</p>
+              <p>公共藝術</p>
+            </div>
+          </li>
+          <!-->
+        </ul>
+      </div>
+
+      <div class="footer">
+        <p>COPYRIGHT © 2021 台北一日遊</p>
+      </div>
+    </div>
+
+    <script src="../static/JS/index.js"></script>
+  </body>
+</html>
