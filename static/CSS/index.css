@@ -5,6 +5,7 @@ body {
   font-family: "Noto Sans TC", sans-serif; /* 字體預設寬400 */
   font-size: 16px;
   color: #666666;
+  padding-bottom: 104px; /* footer高度 */
 }
 
 /* * {
