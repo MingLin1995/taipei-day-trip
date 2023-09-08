@@ -5,7 +5,9 @@ body {
   font-family: "Noto Sans TC", sans-serif; /* 字體預設寬400 */
   font-size: 16px;
   color: #666666;
-  padding-bottom: 104px; /* footer高度 */
+
+  position: relative;
+  min-height: 100vh;
 }
 
 /* * {
@@ -304,7 +306,7 @@ body {
   flex-wrap: wrap;
   justify-content: space-between;
   padding: 15px 15px 0px 15px;
-  margin-bottom: 40px;
+  margin-bottom: 144px; /* 40+footer高104 */
 }
 @media (max-width: 720px) {
   .attractions {
@@ -388,10 +390,9 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed;
+
+  position: absolute;
   bottom: 0;
-  left: 0;
-  z-index: 1;
 }
 .footer p {
   font-weight: 700;
