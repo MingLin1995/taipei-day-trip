@@ -130,11 +130,12 @@ body {
   margin: 10px auto;
 }
 
-.navigation p {
+.navigation a {
   font-weight: 700;
   font-size: 30px;
   line-height: 34px;
   color: #448899;
+  text-decoration: none;
 }
 @media (max-width: 1200px) {
   .navigation p {
