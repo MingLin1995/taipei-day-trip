@@ -5,7 +5,6 @@ body {
   font-family: "Noto Sans TC", sans-serif; /* 字體預設寬400 */
   font-size: 16px;
   color: #666666;
-
   position: relative;
   min-height: 100vh;
 }
@@ -138,7 +137,7 @@ body {
   text-decoration: none;
 }
 @media (max-width: 1200px) {
-  .navigation p {
+  .navigation a {
     margin-left: 10px;
   }
 }
@@ -323,10 +322,11 @@ body {
   border-radius: 10px;
   border: 1px solid #e8e8e8; /* 添加邊框樣式 */
   overflow: hidden; /* 把圖片多出來的部分隱藏 */
+  cursor: pointer;
 }
 @media (max-width: 1200px) {
   .attraction {
-    width: calc((100% - 60px) / 3); /*30px*=60px*/
+    width: calc((100% - 60px) / 3); /*30px*2=60px*/
   }
 }
 @media (max-width: 900px) {
@@ -345,6 +345,10 @@ body {
   object-fit: cover; /* 填滿容器、保持比例 */
   height: 100%;
   width: 100%;
+  transition: 0.3s ease;
+}
+.attraction img:hover {
+  transform: scale(1.1);
 }
 
 .detail-1 {

@@ -154,54 +154,59 @@ function loadAttractions(page, keyword) {
     .then((response) => response.json())
     .then((data) => {
       if (data["error"]) {
-        console.log(data["message"]);
+        throw new Error(data["message"]);
+      }
+      const attractionsList = document.querySelector(".attractions");
+
+      if (page === 0) {
+        attractionsList.innerHTML = ""; // 清空內容
+      }
+
+      // 如果data沒有任何資料，就顯示查無任何景點資料
+      if (data["data"].length === 0) {
+        const noResultsMessage = document.createElement("div");
+        noResultsMessage.className = "centered-text";
+        noResultsMessage.textContent = "查無任何景點資料";
+        attractionsList.appendChild(noResultsMessage);
       } else {
-        const attractionsList = document.querySelector(".attractions");
+        data["data"].forEach((attraction) => {
+          const attractionItem = document.createElement("li");
+          attractionItem.className = "attraction";
 
-        if (page === 0) {
-          attractionsList.innerHTML = ""; // 清空內容
-        }
+          //轉跳景點頁面
+          attractionItem.onclick = function () {
+            const attractionId = attraction["id"];
+            const redirectUrl = `/attraction/${attractionId}`;
+            window.location.href = redirectUrl;
+          };
+          attractionsList.appendChild(attractionItem);
 
-        // 如果data沒有任何資料，就顯示查無任何景點資料
-        if (data["data"].length === 0) {
-          const noResultsMessage = document.createElement("div");
-          noResultsMessage.className = "centered-text";
-          noResultsMessage.textContent = "查無任何景點資料";
-          attractionsList.appendChild(noResultsMessage);
-        } else {
-          data["data"].forEach((attraction) => {
-            //li.attraction
-            const attractionItem = document.createElement("li");
-            attractionItem.className = "attraction";
-            attractionsList.appendChild(attractionItem);
+          //img
+          const img = document.createElement("img");
+          img.src = attraction["images"][0];
+          attractionItem.appendChild(img);
 
-            //img
-            const img = document.createElement("img");
-            img.src = attraction["images"][0];
-            attractionItem.appendChild(img);
+          //.detail-1
+          const detail1 = document.createElement("div");
+          detail1.className = "detail-1";
+          detail1.textContent = attraction["name"];
+          attractionItem.appendChild(detail1);
 
-            //.detail-1
-            const detail1 = document.createElement("div");
-            detail1.className = "detail-1";
-            detail1.textContent = attraction["name"];
-            attractionItem.appendChild(detail1);
+          //.detail-2
+          const detail2 = document.createElement("div");
+          detail2.className = "detail-2";
+          attractionItem.appendChild(detail2);
 
-            //.detail-2
-            const detail2 = document.createElement("div");
-            detail2.className = "detail-2";
-            attractionItem.appendChild(detail2);
+          //.detail-2>p
+          const p1 = document.createElement("p");
+          p1.textContent = attraction["mrt"];
+          detail2.appendChild(p1);
 
-            //.detail-2>p
-            const p1 = document.createElement("p");
-            p1.textContent = attraction["mrt"];
-            detail2.appendChild(p1);
-
-            //.detail-2>p
-            const p2 = document.createElement("p");
-            p2.textContent = attraction["category"];
-            detail2.appendChild(p2);
-          });
-        }
+          //.detail-2>p
+          const p2 = document.createElement("p");
+          p2.textContent = attraction["category"];
+          detail2.appendChild(p2);
+        });
       }
 
       if (data["nextPage"] === null) {
@@ -213,6 +218,14 @@ function loadAttractions(page, keyword) {
       loadingStatus = false; // 載入狀態結束
     })
     .catch((error) => {
-      console.error("發生錯誤：", error);
+      console.error(error);
     });
+}
+
+//建立標籤、屬性
+function createElement(tag, className, textContent) {
+  const element = document.createElement(tag);
+  element.className = className;
+  if (textContent) element.textContent = textContent;
+  return element;
 }
