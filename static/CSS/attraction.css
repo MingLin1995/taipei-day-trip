@@ -160,7 +160,7 @@ body {
 
 /* ----------section---------- */
 .separator {
-  border: 1px solid #e8e8e8;
+  border-bottom: 1px solid #e8e8e8;
   width: 100%;
   margin-bottom: 40px;
 }
@@ -175,6 +175,9 @@ body {
     flex-wrap: wrap;
     flex-direction: column;
     align-items: center;
+  }
+  .separator {
+    margin: 0;
   }
 }
 
