@@ -1,0 +1,444 @@
+/* https://fonts.google.com/noto/specimen/Noto+Sans+TC*/
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;400&display=swap");
+
+body {
+  font-family: "Noto Sans TC", sans-serif; /* 預設寬400 */
+  font-size: 16px;
+  color: #666666;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* * {
+  outline: 1px solid red;
+} */
+.container {
+  max-width: 1920px;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  align-items: center;
+  position: relative;
+}
+
+.max-width {
+  max-width: 1200px;
+  width: 100%;
+}
+
+/* ----------------------註冊、登入視窗------------------------- */
+/* 灰色覆蓋層 */
+.dialog-section {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* 半透明的灰色 */
+  z-index: 4;
+}
+
+/* 登入視窗 */
+.dialog {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 340px;
+  height: 275px;
+  background-color: #ffffff;
+  z-index: 5;
+  box-shadow: 0px 4px 60px 0px #aaaaaa; /*外陰影*/
+  border-radius: 6px;
+  overflow: hidden;
+}
+/* 註冊視窗 */
+.dialog.signup {
+  height: 332px;
+}
+
+.decorator-bar {
+  background: linear-gradient(270deg, #337788 0%, #66aabb 100%);
+  height: 10px;
+}
+
+.dialog-main {
+  padding: 15px;
+  text-align: center;
+}
+
+.dialog-main img {
+  position: absolute;
+  top: 30px;
+  right: 15px;
+  cursor: pointer;
+}
+
+.dialog-main h2 {
+  font-weight: 700;
+  line-height: 27px;
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+.dialog-main input {
+  font-family: "Noto Sans TC", sans-serif;
+  font-weight: 500;
+  line-height: 22px;
+  width: 310px;
+  height: 47px;
+  padding: 15px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.dialog-main .signin-btn,
+.dialog-main .signup-btn {
+  background-color: #448899;
+  color: #ffffff;
+  font-weight: 400;
+  font-size: 19px;
+  width: 310px;
+  height: 47px;
+  border: none;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.dialog-main .login-btn,
+.dialog-main .register-btn {
+  font-weight: 500;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* ------------------------------導覽列------------------------------ */
+/* https://ithelp.ithome.com.tw/articles/10241079 */
+.frozen {
+  position: sticky;
+  top: 0; /* 固定在最上面 */
+  background-color: #ffffff;
+  z-index: 3; /* 在所有層級之上 */
+  width: 100%;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px auto;
+}
+
+.navigation a {
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 34px;
+  color: #448899;
+  text-decoration: none;
+}
+@media (max-width: 1200px) {
+  .navigation a {
+    margin-left: 10px;
+  }
+}
+
+.navigation-button {
+  display: flex;
+  max-width: 175px;
+  max-height: 34px;
+}
+
+.button {
+  font-weight: 500;
+  padding: 10px;
+  cursor: pointer;
+}
+.button:hover {
+  color: black;
+}
+
+/* ----------section---------- */
+.separator {
+  border-bottom: 1px solid #e8e8e8;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+/* -----圖片----- */
+.section {
+  display: flex;
+}
+
+@media (max-width: 1200px) {
+  .section {
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+  }
+  .separator {
+    margin: 0;
+  }
+}
+
+.basic .images {
+  width: 100%;
+  height: 400px;
+  object-fit: cover; /* 保持长宽比，不失真 */
+  object-position: center; /* 在容器内居中显示 */
+  border-radius: 5px;
+  position: relative;
+}
+.w540 {
+  width: calc((100% - 60px) * 540 / 1140); /*15px*4=60px*/
+}
+
+.basic img {
+  transition: 0.7s ease-in-out;
+}
+.circle-container {
+  position: absolute;
+  bottom: 10px;
+  z-index: 2;
+  width: 100%;
+  text-align: center;
+}
+.circle-container img {
+  margin-right: 12px;
+  display: inline-block;
+}
+@media (max-width: 410px) {
+  .circle-container img {
+    margin-right: 10px;
+  }
+}
+@media (max-width: 375px) {
+  .circle-container img {
+    margin-right: 9px;
+  }
+}
+
+.basic {
+  margin: auto 15px;
+  position: relative;
+}
+
+/* 修改 .btn_left 和 .btn_right 类的样式 */
+.btn_left,
+.btn_right {
+  max-height: 36px;
+  position: absolute;
+  top: 50%; /* 垂直居中 */
+  transform: translateY(-50%);
+  z-index: 1;
+  transition: opacity 0.3s;
+  cursor: pointer; /* 鼠标指针样式 */
+}
+
+.btn_left {
+  left: 10px;
+}
+
+.btn_right {
+  right: 10px;
+}
+
+/* 设置默认状态的样式 */
+.default-image {
+  opacity: 1; /* 默认状态下显示图标 */
+}
+
+/* 设置悬停状态的样式 */
+.hovered-image {
+  opacity: 0; /* 初始状态下隐藏悬停图标 */
+}
+
+/* 鼠标悬停时切换图标 */
+.default-image:hover {
+  opacity: 0; /* 鼠标悬停时隐藏默认图标 */
+}
+
+.hovered-image:hover {
+  opacity: 1; /* 鼠标悬停时显示悬停图标 */
+}
+/* -----預定表單----- */
+h1 {
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 33px;
+  margin-bottom: 15px;
+}
+.basic p {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+}
+.booking-form {
+  padding: 15px 41px 20px 20px;
+  height: 302px;
+  width: 100%;
+  margin-top: 20px;
+  border-radius: 5px;
+  background-color: #e8e8e8;
+}
+.w600 {
+  width: calc((100% - 60px) * 600 / 1140); /*15px*4=60px*/
+}
+.booking-form h3 {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 22px;
+  margin-bottom: 15px;
+}
+.booking-form p {
+  font-weight: 500;
+  line-height: 24px;
+}
+/* 選擇日期 */
+.date {
+  display: flex;
+  align-items: center;
+}
+.date-input {
+  background-image: url("../IMG/calendar.png"); /* 添加日历图标背景图片 */
+  background-repeat: no-repeat;
+  background-position: calc(100% - 5px) center; /* 将图标位置调整为距离右边界5px */
+  width: 193px;
+  height: 35px;
+  margin: 15px 0px;
+  padding: 5px 10px;
+  color: #000000;
+  font-weight: 500;
+  line-height: 25px;
+  border: none;
+}
+.date h3 {
+  margin-bottom: 0px;
+}
+.date-input::placeholder {
+  color: #000000;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 25px;
+}
+
+/* 選擇時間 */
+.booking-form h3 {
+  display: flex;
+  align-items: center;
+}
+.booking-form h3 div {
+  display: flex;
+}
+.booking-form img {
+  margin: auto 4px auto 10px;
+  cursor: pointer; /* 鼠标指针样式 */
+}
+
+/* 導覽費用 */
+.basic p {
+  display: inline; /* 或者使用 inline-block 根据您的需求 */
+}
+/* 預約行程 */
+.booking-form button {
+  margin-top: 10px;
+
+  width: 154px; /* 使用像素值 */
+  height: 36px; /* 使用像素值 */
+  padding: 10px 20px; /* 使用像素值 */
+  border-radius: 5px;
+  background: #448899;
+  border: none;
+  font-family: "Noto Sans TC", sans-serif;
+  font-size: 19px;
+  line-height: 16px;
+  color: #ffffff;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* ----------infors---------- */
+.hr {
+  border-bottom: 1px solid #e8e8e8;
+  margin: 40px auto;
+}
+.infors {
+  padding: 10px;
+  padding-bottom: 80px;
+  margin-bottom: 144px; /* 40+footer104 */
+}
+
+.infors h3 {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 32px;
+}
+.infors p {
+  font-size: 16px;
+  line-height: 23.17px;
+  margin-bottom: 20px;
+}
+
+/* ----------navigation---------- */
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px auto;
+}
+
+.navigation a {
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 34px;
+  color: #448899;
+  text-decoration: none;
+}
+
+.navigation-button {
+  display: flex;
+  max-width: 175px;
+  max-height: 34px;
+}
+
+.button {
+  font-weight: 500;
+  padding: 10px;
+  cursor: pointer;
+}
+
+/* ----------footer---------- */
+.footer {
+  width: 100%;
+  background-color: #757575;
+  height: 104px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+}
+.footer p {
+  font-weight: 700;
+  line-height: 14px;
+  color: #ffffff;
+}
+
+/* RWD-放最下面才能蓋過去 */
+
+@media (max-width: 1200px) {
+  .basic .images {
+    border-radius: 0px;
+    height: 350px;
+  }
+  .basic1 {
+    width: calc(100%);
+    margin: 0px;
+  }
+  .basic2 {
+    width: calc((100% - 20px)); /*10px*2=20px*/
+    margin: 20px 0px 0px 0px;
+  }
+  .hr {
+    margin: 40px 10px;
+  }
+}

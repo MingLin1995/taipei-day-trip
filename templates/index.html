@@ -8,13 +8,96 @@
     <link rel="stylesheet" href="../static/CSS/index.css" />
   </head>
   <body>
+    <!-- 灰色覆蓋層 -->
+    <div class="dialog-section" style="display: none">
+      <!-- 登入 -->
+      <div class="dialog signin" style="display: none">
+        <div class="decorator-bar"></div>
+        <!-- 登入 -->
+        <div class="dialog-main">
+          <img
+            src="../static/IMG/close.png"
+            alt="close"
+            onclick="closeDialog()"
+          />
+          <h2>登入會員帳號</h2>
+          <form name="signinForm" onsubmit="return false">
+            <input
+              type="text"
+              class="signin-email"
+              name="email"
+              placeholder="輸入電子信箱"
+            /><br />
+            <input
+              type="password"
+              class="signin-password"
+              name="password"
+              placeholder="輸入密碼"
+            /><br />
+            <input
+              type="submit"
+              value="登入帳戶"
+              onclick="submitSignin()"
+              class="signin-btn"
+            />
+            <br />
+            <div class="register-btn" onclick="showSignup()">
+              還沒有帳戶?點此註冊
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- 註冊 -->
+      <div class="dialog signup" style="display: none">
+        <div class="decorator-bar"></div>
+        <div class="dialog-main">
+          <img
+            src="../static/IMG/close.png"
+            alt="close"
+            onclick="closeDialog()"
+          />
+          <h2>註冊會員帳號</h2>
+          <form name="signupForm" onsubmit="return false">
+            <input
+              type="text"
+              class="signup-name"
+              name="name"
+              placeholder="輸入姓名"
+            /><br />
+            <input
+              type="text"
+              class="signup-email"
+              name="email"
+              placeholder="輸入電子郵件"
+            /><br />
+            <input
+              type="password"
+              class="signup-password"
+              name="password"
+              placeholder="輸入密碼"
+            /><br />
+            <input
+              type="submit"
+              value="註冊"
+              onclick="submitSignup()"
+              class="signup-btn"
+            />
+            <br />
+            <div class="login-btn" onclick="showSignin()">
+              已經有帳戶了?點此登入
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <div class="container">
       <div class="frozen">
         <div class="navigation max-width">
-          <p>台北一日遊</p>
+          <a href="/">台北一日遊</a>
           <div class="navigation-button">
             <div class="button">預定行程</div>
-            <div class="button">登入/註冊</div>
+            <div class="button" onclick="openSignin()">登入/註冊</div>
           </div>
         </div>
       </div>
@@ -86,10 +169,9 @@
           <!-->
         </ul>
       </div>
-
-      <div class="footer">
-        <p>COPYRIGHT © 2021 台北一日遊</p>
-      </div>
+    </div>
+    <div class="footer">
+      <p>COPYRIGHT © 2021 台北一日遊</p>
     </div>
 
     <script src="../static/JS/index.js"></script>

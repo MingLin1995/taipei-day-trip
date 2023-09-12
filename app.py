@@ -132,7 +132,8 @@ def get_attractions_data(page, keyword):
     data = []
 
     for row in result:
-        images = row.pop("images").split(",")  # pop刪除"鍵"，返回"值"，轉換成列表
+        attraction_id = row["id"]
+        images = get_attraction_images(attraction_id, cursor)
         row["images"] = images
         row["lat"] = float(row["lat"])
         row["lng"] = float(row["lng"])
@@ -173,10 +174,8 @@ def get_attraction(attractionId):
         return jsonify(error_response), 500
 
 
-def get_attraction_data(attraction_id):
-    connection = connection_pool.get_connection()
-    cursor = connection.cursor(dictionary=True)
-
+def get_basic_attraction_info(attraction_id, cursor):
+    # 取得基本資訊
     query = """
         SELECT
             a.id,
@@ -187,29 +186,57 @@ def get_attraction_data(attraction_id):
             a.transport,
             a.mrt,
             a.lat,
-            a.lng,
-            GROUP_CONCAT(i.image_url) AS images
+            a.lng
         FROM
             attractions a
-        JOIN
-            images i ON a.id = i.attraction_id
         WHERE
             a.id = %s
     """
 
     cursor.execute(query, (attraction_id,))
     result = cursor.fetchone()
+    return result
 
-    cursor.close()
-    connection.close()
 
-    if result["id"] != None:
-        images = result.pop("images").split(",")
-        result["images"] = images
-        result["lat"] = float(result["lat"])
-        result["lng"] = float(result["lng"])
-        return {"data": result}
+def get_attraction_images(attraction_id, cursor):
+    # 圖片URL
+    image_query = """
+    SELECT
+        i.image_url
+    FROM
+        images i
+    WHERE
+        i.attraction_id = %s
+    """
+    cursor.execute(image_query, (attraction_id,))
+    image_results = cursor.fetchall()
+    images = [image_result['image_url'] for image_result in image_results]
+    return images
+
+
+def get_attraction_data(attraction_id):
+    connection = connection_pool.get_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    # 取得基本資訊
+    basic_info = get_basic_attraction_info(attraction_id, cursor)
+
+    if basic_info:
+        # 取得圖片資訊
+        images = get_attraction_images(attraction_id, cursor)
+
+        # 合并结果
+        basic_info["images"] = images
+        basic_info["lat"] = float(basic_info["lat"])
+        basic_info["lng"] = float(basic_info["lng"])
+
+        cursor.close()
+        connection.close()
+
+        return {"data": basic_info}
     else:
+        cursor.close()
+        connection.close()
         return None
 
 
