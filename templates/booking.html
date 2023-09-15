@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>預訂頁面</title>
+    <link rel="stylesheet" href="../static/CSS/RESET.css" />
+    <link rel="stylesheet" href="../static/CSS/booking.css" />
+  </head>
+  <body>
+    <!-- 灰色覆蓋層 -->
+    <div class="dialog-section" style="display: none">
+      <!-- 登入 -->
+      <div class="dialog signin" style="display: none">
+        <div class="decorator-bar"></div>
+        <!-- 登入 -->
+        <div class="dialog-main">
+          <img
+            src="../static/IMG/close.png"
+            alt="close"
+            onclick="closeDialog()"
+          />
+          <h2>登入會員帳號</h2>
+          <form name="signinForm" onsubmit="return false">
+            <input
+              type="text"
+              class="signin-email"
+              name="email"
+              placeholder="輸入電子信箱"
+            /><br />
+            <input
+              type="password"
+              class="signin-password"
+              name="password"
+              placeholder="輸入密碼"
+            /><br />
+            <input
+              type="submit"
+              value="登入帳戶"
+              onclick="submitSignin()"
+              class="signin-btn"
+            />
+            <br />
+            <div class="register-btn" onclick="showSignup()">
+              還沒有帳戶?點此註冊
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- 註冊 -->
+      <div class="dialog signup" style="display: none">
+        <div class="decorator-bar"></div>
+        <div class="dialog-main">
+          <img
+            src="../static/IMG/close.png"
+            alt="close"
+            onclick="closeDialog()"
+          />
+          <h2>註冊會員帳號</h2>
+          <form name="signupForm" onsubmit="return false">
+            <input
+              type="text"
+              class="signup-name"
+              name="name"
+              placeholder="輸入姓名"
+            /><br />
+            <input
+              type="text"
+              class="signup-email"
+              name="email"
+              placeholder="輸入電子郵件"
+            /><br />
+            <input
+              type="password"
+              class="signup-password"
+              name="password"
+              placeholder="輸入密碼"
+            /><br />
+            <input
+              type="submit"
+              value="註冊"
+              onclick="submitSignup()"
+              class="signup-btn"
+            />
+            <br />
+            <div class="login-btn" onclick="showSignin()">
+              已經有帳戶了?點此登入
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="frozen">
+      <div class="navigation max-width">
+        <a href="/">台北一日遊</a>
+        <div class="navigation-button">
+          <div class="button">預定行程</div>
+          <div class="button" onclick="openSignin()">登入/註冊</div>
+        </div>
+      </div>
+      <div class="separator"></div>
+    </div>
+
+    <div class="container max-width">
+      <div class="headline w100 h3 p10">您好，XXX，待預訂的行程如下：</div>
+      <div class="section w100 pl110 mb40 p10">
+        <img src="../static/IMG/delete.png" alt="" class="del1" />
+        <img src="../static/IMG/welcome.jpg" alt="" class="picture" />
+        <div class="infor">
+          <div class="title">台北一日遊：XXXXXXX</div>
+          <div class="mb10">
+            <span class="h4">日期：</span>2021-04-23<span></span>
+          </div>
+          <div class="mb10">
+            <span class="h4">時間：</span><span>早上 9 點到下午 4 點</span>
+          </div>
+          <div class="mb10">
+            <span class="h4">費用：</span><span>新台幣 2,000 元</span>
+          </div>
+          <div>
+            <span class="h4">地點：</span
+            ><span>臺北市大安區忠孝東路 4段XXXX</span>
+          </div>
+          <img src="../static/IMG/delete.png" alt="" class="del2" />
+        </div>
+      </div>
+      <div class="separator .max-width mb40"></div>
+      <div class="content w100 pl110 mb40 p10">
+        <h3 class="h3">您的聯絡資訊</h3>
+        聯絡姓名：<input type="text" class="mb15" /><br />
+        聯絡信箱：<input type="text" class="mb15" /><br />
+        手機號碼：<input type="text" class="mb15" /><br />
+        <p class="h4">
+          請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。
+        </p>
+      </div>
+      <div class="separator .max-width mb40"></div>
+      <div class="payment w100 pl110 mb40 p10">
+        <h3 class="h3">信用卡付款資訊</h3>
+        卡片號碼：<input
+          type="text"
+          class="mb15"
+          placeholder="**** **** **** ****"
+        /><br />
+        過期時間：<input type="text" class="mb15" placeholder="MM/YY" /><br />
+        驗證密碼：<input type="text" class="mb15" placeholder="CVV" /><br />
+      </div>
+      <div class="separator .max-width mb40"></div>
+      <div class="confirm w100 pl110 p10">
+        <p class="h4">總價：新台幣 2000 元</p>
+        <div class="booking">確認訂購並付款</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>COPYRIGHT © 2021 台北一日遊</p>
+    </div>
+
+    <script src="../static/JS/booking.js"></script>
+  </body>
+</html>
