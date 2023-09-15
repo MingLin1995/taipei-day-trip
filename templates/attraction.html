@@ -1,214 +1,117 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>景點頁面</title>
-    <link rel="stylesheet" href="../static/CSS/RESET.css" />
-    <link rel="stylesheet" href="../static/CSS/attraction.css" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css"
-      rel="stylesheet"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
-  </head>
-  <body>
-    <!-- 灰色覆蓋層 -->
-    <div class="dialog-section" style="display: none">
-      <!-- 登入 -->
-      <div class="dialog signin" style="display: none">
-        <div class="decorator-bar"></div>
-        <!-- 登入 -->
-        <div class="dialog-main">
+{% extends "base.html" %}
+<!-- title -->
+<title>{% block title %}景點頁面{% endblock %}</title>
+<!-- CSS -->
+{% block CSS %}
+<link rel="stylesheet" href="../static/CSS/attraction.css" />
+<link
+  href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css"
+  rel="stylesheet"
+/>
+{% endblock %}
+<!-- body -->
+{% block body %}
+<div class="container">
+  <div class="max-width">
+    <div class="section">
+      <div class="basic w540 basic1">
+        <div class="image-container left-arrow">
           <img
-            src="../static/IMG/close.png"
-            alt="close"
-            onclick="closeDialog()"
+            class="btn_left default-image"
+            src="../static/IMG/Default_left_arrow.png"
+            alt="預設上一張"
           />
-          <h2>登入會員帳號</h2>
-          <form name="signinForm" onsubmit="return false">
-            <input
-              type="text"
-              class="signin-email"
-              name="email"
-              placeholder="輸入電子信箱"
-            /><br />
-            <input
-              type="password"
-              class="signin-password"
-              name="password"
-              placeholder="輸入密碼"
-            /><br />
-            <input
-              type="submit"
-              value="登入帳戶"
-              onclick="submitSignin()"
-              class="signin-btn"
-            />
-            <br />
-            <div class="register-btn" onclick="showSignup()">
-              還沒有帳戶?點此註冊
-            </div>
-          </form>
-        </div>
-      </div>
-      <!-- 註冊 -->
-      <div class="dialog signup" style="display: none">
-        <div class="decorator-bar"></div>
-        <div class="dialog-main">
           <img
-            src="../static/IMG/close.png"
-            alt="close"
-            onclick="closeDialog()"
+            class="btn_left hovered-image"
+            src="../static/IMG/Hovered_left_arrow.png"
+            alt="移入上一張"
+            onclick="changeImage('prev')"
           />
-          <h2>註冊會員帳號</h2>
-          <form name="signupForm" onsubmit="return false">
+        </div>
+        <img class="images" src="" alt="景點圖片" />
+        <div class="circle-container"></div>
+
+        <div class="image-container right-arrow">
+          <img
+            class="btn_right default-image"
+            src="../static/IMG/Default_right_arrow.png"
+            alt="預設下一張"
+          />
+          <img
+            class="btn_right hovered-image"
+            src="../static/IMG/Hovered_right_arrow.png"
+            alt="移入下一張"
+            onclick="changeImage('next')"
+          />
+        </div>
+      </div>
+
+      <div class="basic w600 basic2">
+        <h1 class="attractionName">平安鐘</h1>
+        <span class="category">公共藝術</span>
+        at
+        <span class="mrt">忠孝復興</span>
+        <div class="booking-form">
+          <h3>訂購導覽行程</h3>
+          <p>以此景點為中心的一日行程，帶您探索城市角落故事</p>
+          <form class="date">
+            <h3>選擇日期：</h3>
             <input
               type="text"
-              class="signup-name"
-              name="name"
-              placeholder="輸入姓名"
-            /><br />
-            <input
-              type="text"
-              class="signup-email"
-              name="email"
-              placeholder="輸入電子郵件"
-            /><br />
-            <input
-              type="password"
-              class="signup-password"
-              name="password"
-              placeholder="輸入密碼"
-            /><br />
-            <input
-              type="submit"
-              value="註冊"
-              onclick="submitSignup()"
-              class="signup-btn"
+              name="date"
+              class="date-input"
+              placeholder="yyyy/mm/dd"
+              onclick="openFlatpickr()"
             />
-            <br />
-            <div class="login-btn" onclick="showSignin()">
-              已經有帳戶了?點此登入
-            </div>
           </form>
+          <h3>
+            選擇時間：
+            <div class="am">
+              <img
+                src="../static/IMG/btn.png"
+                alt=""
+                class="am_btn"
+                onclick="timeButton('am_btn')"
+              />
+              <p>上半天</p>
+            </div>
+            <div class="pm">
+              <img
+                src="../static/IMG/btn.png"
+                alt=""
+                class="pm_btn"
+                onclick="timeButton('pm_btn')"
+              />
+              <p>下半天</p>
+            </div>
+          </h3>
+          <h3>
+            導覽費用：
+            <p class="exp"></p>
+          </h3>
+          <button>開始預約行程</button>
         </div>
       </div>
     </div>
-
-    <div class="frozen">
-      <div class="navigation max-width">
-        <a href="/">台北一日遊</a>
-        <div class="navigation-button">
-          <div class="button">預定行程</div>
-          <div class="button" onclick="openSignin()">登入/註冊</div>
-        </div>
-      </div>
-      <div class="separator"></div>
+    <div class="hr"></div>
+    <div class="infors">
+      <p class="description">
+        平安鐘祈求大家的平安，這是為了紀念921地震週年的設計，在喧鬧的廣場上每個小時鳴鐘，保佑平安，祈禱臺灣不會再發生這樣的天災。雙手合十加上108個黃色的琉璃乳丁，隨著緩緩流下的水，在底下的一個小噴泉噴出。雙手合十的意義，一個是祈福，一個是包容，教我們要包容這樣的改變，撫平這樣的傷口。下面的水緩緩流出，代表著人的生命力是不斷地延續下去。緩緩地鐘聲，卻帶來心中的寧靜。
+        這個平安鐘是由建築師姚仁喜與琉璃創作家王俠軍共同設計，長6公尺、寬5公尺，以鑄銅製成，由法鼓山文教基金會全額出資。平安鐘點綴都市景觀，不時提醒大家，面對刻骨銘心的災難痛苦，更應該有謙卑的一顆心。
+      </p>
+      <h3>景點地址：</h3>
+      <p class="address">臺北市 大安區忠孝東路4段</p>
+      <h3>交通方式：</h3>
+      <p class="transport">
+        捷運站名：忠孝復興站4號出口1.公車：204、212、212直、232、232副、262、262(區間)、278、299、521、605、605(副)、605(新台五線)、667、903、忠孝新幹線至頂好市場站
+        2.車位：太平洋崇光百貨地下停車場或市民大道附近地下停車場
+      </p>
     </div>
-
-    <div class="container">
-      <div class="max-width">
-        <div class="section">
-          <div class="basic w540 basic1">
-            <div class="image-container left-arrow">
-              <img
-                class="btn_left default-image"
-                src="../static/IMG/Default_left_arrow.png"
-                alt="預設上一張"
-              />
-              <img
-                class="btn_left hovered-image"
-                src="../static/IMG/Hovered_left_arrow.png"
-                alt="移入上一張"
-                onclick="changeImage('prev')"
-              />
-            </div>
-            <img class="images" src="" alt="景點圖片" />
-            <div class="circle-container"></div>
-
-            <div class="image-container right-arrow">
-              <img
-                class="btn_right default-image"
-                src="../static/IMG/Default_right_arrow.png"
-                alt="預設下一張"
-              />
-              <img
-                class="btn_right hovered-image"
-                src="../static/IMG/Hovered_right_arrow.png"
-                alt="移入下一張"
-                onclick="changeImage('next')"
-              />
-            </div>
-          </div>
-
-          <div class="basic w600 basic2">
-            <h1 class="attractionName">平安鐘</h1>
-            <span class="category">公共藝術</span>
-            at
-            <span class="mrt">忠孝復興</span>
-            <div class="booking-form">
-              <h3>訂購導覽行程</h3>
-              <p>以此景點為中心的一日行程，帶您探索城市角落故事</p>
-              <form class="date">
-                <h3>選擇日期：</h3>
-                <input
-                  type="text"
-                  name="date"
-                  class="date-input"
-                  placeholder="yyyy/mm/dd"
-                  onclick="openFlatpickr()"
-                />
-              </form>
-              <h3>
-                選擇時間：
-                <div class="am">
-                  <img
-                    src="../static/IMG/btn.png"
-                    alt=""
-                    class="am_btn"
-                    onclick="timeButton('am_btn')"
-                  />
-                  <p>上半天</p>
-                </div>
-                <div class="pm">
-                  <img
-                    src="../static/IMG/btn.png"
-                    alt=""
-                    class="pm_btn"
-                    onclick="timeButton('pm_btn')"
-                  />
-                  <p>下半天</p>
-                </div>
-              </h3>
-              <h3>
-                導覽費用：
-                <p class="exp"></p>
-              </h3>
-              <button>開始預約行程</button>
-            </div>
-          </div>
-        </div>
-        <div class="hr"></div>
-        <div class="infors">
-          <p class="description">
-            平安鐘祈求大家的平安，這是為了紀念921地震週年的設計，在喧鬧的廣場上每個小時鳴鐘，保佑平安，祈禱臺灣不會再發生這樣的天災。雙手合十加上108個黃色的琉璃乳丁，隨著緩緩流下的水，在底下的一個小噴泉噴出。雙手合十的意義，一個是祈福，一個是包容，教我們要包容這樣的改變，撫平這樣的傷口。下面的水緩緩流出，代表著人的生命力是不斷地延續下去。緩緩地鐘聲，卻帶來心中的寧靜。
-            這個平安鐘是由建築師姚仁喜與琉璃創作家王俠軍共同設計，長6公尺、寬5公尺，以鑄銅製成，由法鼓山文教基金會全額出資。平安鐘點綴都市景觀，不時提醒大家，面對刻骨銘心的災難痛苦，更應該有謙卑的一顆心。
-          </p>
-          <h3>景點地址：</h3>
-          <p class="address">臺北市 大安區忠孝東路4段</p>
-          <h3>交通方式：</h3>
-          <p class="transport">
-            捷運站名：忠孝復興站4號出口1.公車：204、212、212直、232、232副、262、262(區間)、278、299、521、605、605(副)、605(新台五線)、667、903、忠孝新幹線至頂好市場站
-            2.車位：太平洋崇光百貨地下停車場或市民大道附近地下停車場
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="footer">
-      <p>COPYRIGHT © 2021 台北一日遊</p>
-    </div>
-
-    <script src="../static/JS/attraction.js"></script>
-  </body>
-</html>
+  </div>
+</div>
+{% endblock %}
+<!-- JS -->
+{% block JS %}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+<script src="../static/JS/attraction.js"></script>
+{% endblock %}
