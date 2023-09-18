@@ -27,13 +27,13 @@
           <form name="signinForm" onsubmit="return false">
             <input
               type="text"
-              class="signin-email"
+              id="signin-email"
               name="email"
               placeholder="輸入電子信箱"
             /><br />
             <input
               type="password"
-              class="signin-password"
+              id="signin-password"
               name="password"
               placeholder="輸入密碼"
             /><br />
@@ -44,8 +44,11 @@
               class="signin-btn"
             />
             <br />
-            <div class="register-btn" onclick="showSignup()">
-              還沒有帳戶?點此註冊
+            <!-- 登入狀態訊息 -->
+            <div id="signin-message" class="message"></div>
+            <div class="register-btn">
+              <span>還沒有帳戶?</span
+              ><span onclick="showSignup()" class="cursor">點此註冊</span>
             </div>
           </form>
         </div>
@@ -63,19 +66,19 @@
           <form name="signupForm" onsubmit="return false">
             <input
               type="text"
-              class="signup-name"
+              id="signup-name"
               name="name"
               placeholder="輸入姓名"
             /><br />
             <input
               type="text"
-              class="signup-email"
+              id="signup-email"
               name="email"
               placeholder="輸入電子郵件"
             /><br />
             <input
               type="password"
-              class="signup-password"
+              id="signup-password"
               name="password"
               placeholder="輸入密碼"
             /><br />
@@ -86,8 +89,11 @@
               class="signup-btn"
             />
             <br />
-            <div class="login-btn" onclick="showSignin()">
-              已經有帳戶了?點此登入
+            <!-- 註冊狀態訊息 -->
+            <div id="signup-message" class="message"></div>
+            <div class="login-btn">
+              <span>已經有帳戶了?</span
+              ><span onclick="showSignin()" class="cursor">點此登入</span>
             </div>
           </form>
         </div>
@@ -99,7 +105,9 @@
         <a href="/">台北一日遊</a>
         <div class="navigation-button">
           <div class="button">預定行程</div>
-          <div class="button" onclick="openSignin()">登入/註冊</div>
+          <div class="button" id="loginButton" onclick="openSignin()">
+            登入/註冊
+          </div>
         </div>
       </div>
       <div class="separator"></div>
@@ -112,6 +120,6 @@
     </div>
 
     <script src="../static/JS/base.js"></script>
-    {% block JS %}{% endblock %}
+    {% block JS %} {% endblock %}
   </body>
 </html>

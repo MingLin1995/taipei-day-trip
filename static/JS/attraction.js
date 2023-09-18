@@ -1,4 +1,7 @@
-getAttraction();
+window.onload = function () {
+  checkToken();
+  getAttraction();
+};
 
 /* -------------------依據id顯示景點相關資料------------------- */
 // https://ithelp.ithome.com.tw/articles/10204214

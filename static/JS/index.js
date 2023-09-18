@@ -1,4 +1,5 @@
 window.onload = function () {
+  checkToken();
   getMrts();
   loadAttractions(nextPage, keyword);
 };

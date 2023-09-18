@@ -71,7 +71,7 @@
   top: 50%; /* 垂直居中 */
   transform: translateY(-50%);
   z-index: 1;
-  transition: opacity 0.3s;
+  transition: opacity 0.7s;
   cursor: pointer; /* 鼠标指针样式 */
 }
 
