@@ -1,0 +1,131 @@
+/*-------------分隔線--------------*/
+.separator {
+  border-bottom: 1px solid #e8e8e8;
+  width: 100%;
+  margin-bottom: 40px;
+}
+/* ------------------主要內容------------------- */
+.w100 {
+  width: 100%;
+}
+.pl110 {
+  padding: 0px 110px;
+}
+.mb40 {
+  margin-bottom: 40px;
+}
+.mb15 {
+  margin-bottom: 15px;
+}
+.mb10 {
+  margin-bottom: 10px;
+  height: 24px;
+}
+.headline {
+  padding-left: 100px; /* 1200-1000 /2 */
+  margin-bottom: 30px;
+  line-height: 27px;
+}
+.h3 {
+  font-weight: 700;
+  font-size: 19px;
+  margin-bottom: 20px;
+}
+.h4 {
+  font-weight: 700;
+}
+
+.title {
+  font-weight: 700;
+  color: #448899;
+  margin-bottom: 20px;
+  line-height: 24px;
+}
+.section {
+  margin-top: 10px;
+  display: flex;
+  position: relative;
+}
+@media (max-width: 768px) {
+  .section {
+    flex-direction: column;
+    margin-bottom: 60px;
+  }
+}
+.section img {
+  width: 250px;
+  height: 200px;
+}
+@media (max-width: 768px) {
+  .section img {
+    width: 100%;
+  }
+}
+.section .del1 {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 0;
+  right: 110px;
+}
+.section .del2 {
+  display: none;
+}
+@media (max-width: 768px) {
+  .section .del1 {
+    display: none;
+  }
+  .section .del2 {
+    display: block;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    right: 10px;
+  }
+}
+input {
+  width: 200px;
+  height: 38px;
+  padding: 10px;
+  border: 1px solid #e8e8e8;
+  border-radius: 5px;
+  /* 輸入框字體調整 */
+  font-family: "Noto Sans TC", sans-serif;
+  color: #757575;
+  font-weight: 500;
+  font-size: 16px;
+}
+.infor {
+  margin-left: 30px;
+}
+@media (max-width: 768px) {
+  .infor {
+    margin-top: 30px;
+    margin-left: 0px;
+  }
+}
+.confirm {
+  margin-bottom: 144px; /* 40+頁尾高104 */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.booking {
+  width: 173px;
+  height: 36px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  background: #448899;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 19px;
+  margin: 22px 0px;
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .p10 {
+    padding: 0px 10px;
+  }
+}

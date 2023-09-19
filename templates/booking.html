@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+<!-- title -->
+<title>{% block title %}景點頁面{% endblock %}</title>
+<!-- CSS -->
+{% block CSS %}
+<link rel="stylesheet" href="../static/CSS/booking.css" />
+{% endblock %}
+<!-- body -->
+{% block body %}
+<div class="container max-width">
+  <div class="headline w100 h3 p10">您好，XXX，待預訂的行程如下：</div>
+  <div class="section w100 pl110 mb40 p10">
+    <img src="../static/IMG/delete.png" alt="" class="del1" />
+    <img src="../static/IMG/welcome.jpg" alt="" class="picture" />
+    <div class="infor">
+      <div class="title">台北一日遊：XXXXXXX</div>
+      <div class="mb10">
+        <span class="h4">日期：</span>2021-04-23<span></span>
+      </div>
+      <div class="mb10">
+        <span class="h4">時間：</span><span>早上 9 點到下午 4 點</span>
+      </div>
+      <div class="mb10">
+        <span class="h4">費用：</span><span>新台幣 2,000 元</span>
+      </div>
+      <div>
+        <span class="h4">地點：</span><span>臺北市大安區忠孝東路 4段XXXX</span>
+      </div>
+      <img src="../static/IMG/delete.png" alt="" class="del2" />
+    </div>
+  </div>
+  <div class="separator .max-width mb40"></div>
+  <div class="content w100 pl110 mb40 p10">
+    <h3 class="h3">您的聯絡資訊</h3>
+    聯絡姓名：<input type="text" class="mb15" /><br />
+    聯絡信箱：<input type="text" class="mb15" /><br />
+    手機號碼：<input type="text" class="mb15" /><br />
+    <p class="h4">
+      請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。
+    </p>
+  </div>
+  <div class="separator .max-width mb40"></div>
+  <div class="payment w100 pl110 mb40 p10">
+    <h3 class="h3">信用卡付款資訊</h3>
+    卡片號碼：<input
+      type="text"
+      class="mb15"
+      placeholder="**** **** **** ****"
+    /><br />
+    過期時間：<input type="text" class="mb15" placeholder="MM/YY" /><br />
+    驗證密碼：<input type="text" class="mb15" placeholder="CVV" /><br />
+  </div>
+  <div class="separator .max-width mb40"></div>
+  <div class="confirm w100 pl110 p10">
+    <p class="h4">總價：新台幣 2000 元</p>
+    <div class="booking">確認訂購並付款</div>
+  </div>
+</div>
+{% endblock %}
+<!-- JS -->
+{% block JS %}
+<script src="../static/JS/booking.js"></script>
+{% endblock %}

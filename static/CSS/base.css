@@ -1,0 +1,184 @@
+/* https://fonts.google.com/noto/specimen/Noto+Sans+TC*/
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;400&display=swap");
+
+body {
+  font-family: "Noto Sans TC", sans-serif; /* 字體預設寬400 */
+  font-size: 16px;
+  color: #666666;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* * {
+  outline: 1px solid red;
+} */
+.container {
+  /* max-width: 1920px; 如果有要求最大寬度為1920px*/
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  align-items: center;
+  position: relative;
+}
+
+.max-width {
+  max-width: 1200px;
+  width: 100%;
+}
+/* ----------------------註冊、登入視窗------------------------- */
+/* 灰色覆蓋層 */
+.dialog-section {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* 半透明的灰色 */
+  z-index: 3;
+}
+
+/* 登入視窗 */
+.dialog {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 340px;
+  height: 275px;
+  background-color: #ffffff;
+  z-index: 4;
+  box-shadow: 0px 4px 60px 0px #aaaaaa; /*外陰影*/
+  border-radius: 6px;
+  overflow: hidden;
+}
+/* 註冊視窗 */
+.dialog.signup,
+.dialog.signin {
+  height: auto;
+}
+
+.decorator-bar {
+  background: linear-gradient(270deg, #337788 0%, #66aabb 100%);
+  height: 10px;
+}
+
+.dialog-main {
+  padding: 15px;
+  text-align: center;
+}
+
+.dialog-main img {
+  position: absolute;
+  top: 30px;
+  right: 15px;
+  cursor: pointer;
+}
+
+.dialog-main h2 {
+  font-weight: 700;
+  line-height: 27px;
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+.dialog-main input {
+  font-family: "Noto Sans TC", sans-serif;
+  font-weight: 500;
+  line-height: 22px;
+  width: 310px;
+  height: 47px;
+  padding: 15px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.dialog-main .signin-btn,
+.dialog-main .signup-btn {
+  background-color: #448899;
+  color: #ffffff;
+  font-weight: 400;
+  font-size: 19px;
+  width: 310px;
+  height: 47px;
+  border: none;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.dialog-main .login-btn,
+.dialog-main .register-btn {
+  font-weight: 500;
+  font-size: 16px;
+  text-align: center;
+}
+.cursor {
+  cursor: pointer;
+}
+.dialog-main .message {
+  margin-bottom: 10px;
+}
+
+/* ------------------------------導覽列------------------------------ */
+/* https://ithelp.ithome.com.tw/articles/10241079 */
+.frozen {
+  position: sticky;
+  top: 0; /* 固定在最上面 */
+  background-color: #ffffff;
+  z-index: 2; /* 在所有層級之上 */
+  width: 100%;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: auto;
+  height: 54px;
+}
+
+.navigation a {
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 34px;
+  color: #448899;
+  text-decoration: none;
+}
+@media (max-width: 1200px) {
+  .navigation a {
+    margin-left: 10px;
+  }
+}
+
+.navigation-button {
+  display: flex;
+  max-width: 175px;
+  max-height: 34px;
+}
+
+.button {
+  font-weight: 500;
+  padding: 10px;
+  cursor: pointer;
+}
+.button:hover {
+  color: black;
+}
+
+/* ------------------------------頁尾------------------------------ */
+.footer {
+  width: 100%;
+  background-color: #757575;
+  height: 104px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: absolute;
+  bottom: 0;
+}
+.footer p {
+  font-weight: 700;
+  line-height: 14px;
+  color: #ffffff;
+}
