@@ -1,0 +1,125 @@
+<!-- https://ithelp.ithome.com.tw/articles/10223125 -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}預設Title{% endblock %}</title>
+    <link rel="stylesheet" href="../static/CSS/RESET.css" />
+    <link rel="stylesheet" href="../static/CSS/base.css" />
+    {% block CSS %}{% endblock %}
+  </head>
+  <body>
+    <!-- 灰色覆蓋層 -->
+    <div class="dialog-section" style="display: none">
+      <!-- 登入 -->
+      <div class="dialog signin" style="display: none">
+        <div class="decorator-bar"></div>
+        <!-- 登入 -->
+        <div class="dialog-main">
+          <img
+            src="../static/IMG/close.png"
+            alt="close"
+            onclick="closeDialog()"
+          />
+          <h2>登入會員帳號</h2>
+          <form name="signinForm" onsubmit="return false">
+            <input
+              type="text"
+              id="signin-email"
+              name="email"
+              placeholder="輸入電子信箱"
+            /><br />
+            <input
+              type="password"
+              id="signin-password"
+              name="password"
+              placeholder="輸入密碼"
+            /><br />
+            <input
+              type="submit"
+              value="登入帳戶"
+              onclick="submitSignin()"
+              class="signin-btn"
+            />
+            <br />
+            <!-- 登入狀態訊息 -->
+            <div id="signin-message" class="message"></div>
+            <div class="register-btn">
+              <span>還沒有帳戶?</span
+              ><span onclick="showSignup()" class="cursor">點此註冊</span>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- 註冊 -->
+      <div class="dialog signup" style="display: none">
+        <div class="decorator-bar"></div>
+        <div class="dialog-main">
+          <img
+            src="../static/IMG/close.png"
+            alt="close"
+            onclick="closeDialog()"
+          />
+          <h2>註冊會員帳號</h2>
+          <form name="signupForm" onsubmit="return false">
+            <input
+              type="text"
+              id="signup-name"
+              name="name"
+              placeholder="輸入姓名"
+            /><br />
+            <input
+              type="text"
+              id="signup-email"
+              name="email"
+              placeholder="輸入電子郵件"
+            /><br />
+            <input
+              type="password"
+              id="signup-password"
+              name="password"
+              placeholder="輸入密碼"
+            /><br />
+            <input
+              type="submit"
+              value="註冊"
+              onclick="submitSignup()"
+              class="signup-btn"
+            />
+            <br />
+            <!-- 註冊狀態訊息 -->
+            <div id="signup-message" class="message"></div>
+            <div class="login-btn">
+              <span>已經有帳戶了?</span
+              ><span onclick="showSignin()" class="cursor">點此登入</span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="frozen">
+      <div class="navigation max-width">
+        <a href="/">台北一日遊</a>
+        <div class="navigation-button">
+          <div class="button">預定行程</div>
+          <div class="button" id="loginButton" onclick="openSignin()">
+            登入/註冊
+          </div>
+        </div>
+      </div>
+      <div class="separator"></div>
+    </div>
+
+    {% block body %}{% endblock %}
+
+    <div class="footer">
+      <p>COPYRIGHT © 2021 台北一日遊</p>
+    </div>
+
+    <script src="../static/JS/base.js"></script>
+    {% block JS %} {% endblock %}
+  </body>
+</html>

@@ -1,163 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>首頁</title>
-    <link rel="stylesheet" href="../static/CSS/RESET.css" />
-    <link rel="stylesheet" href="../static/CSS/index.css" />
-  </head>
-  <body>
-    <!-- 灰色覆蓋層 -->
-    <div class="dialog-section" style="display: none">
-      <!-- 登入 -->
-      <div class="dialog signin" style="display: none">
-        <div class="decorator-bar"></div>
-        <!-- 登入 -->
-        <div class="dialog-main">
-          <img
-            src="../static/IMG/close.png"
-            alt="close"
-            onclick="closeDialog()"
-          />
-          <h2>登入會員帳號</h2>
-          <form name="signinForm" onsubmit="return false">
-            <input
-              type="text"
-              class="signin-email"
-              name="email"
-              placeholder="輸入電子信箱"
-            /><br />
-            <input
-              type="password"
-              class="signin-password"
-              name="password"
-              placeholder="輸入密碼"
-            /><br />
-            <input
-              type="submit"
-              value="登入帳戶"
-              onclick="submitSignin()"
-              class="signin-btn"
-            />
-            <br />
-            <div class="register-btn" onclick="showSignup()">
-              還沒有帳戶?點此註冊
-            </div>
-          </form>
-        </div>
-      </div>
-      <!-- 註冊 -->
-      <div class="dialog signup" style="display: none">
-        <div class="decorator-bar"></div>
-        <div class="dialog-main">
-          <img
-            src="../static/IMG/close.png"
-            alt="close"
-            onclick="closeDialog()"
-          />
-          <h2>註冊會員帳號</h2>
-          <form name="signupForm" onsubmit="return false">
-            <input
-              type="text"
-              class="signup-name"
-              name="name"
-              placeholder="輸入姓名"
-            /><br />
-            <input
-              type="text"
-              class="signup-email"
-              name="email"
-              placeholder="輸入電子郵件"
-            /><br />
-            <input
-              type="password"
-              class="signup-password"
-              name="password"
-              placeholder="輸入密碼"
-            /><br />
-            <input
-              type="submit"
-              value="註冊"
-              onclick="submitSignup()"
-              class="signup-btn"
-            />
-            <br />
-            <div class="login-btn" onclick="showSignin()">
-              已經有帳戶了?點此登入
-            </div>
-          </form>
-        </div>
+{% extends "base.html" %}
+<!-- title -->
+<title>{% block title %}首頁{% endblock %}</title>
+<!-- CSS -->
+{% block CSS %}
+<link rel="stylesheet" href="../static/CSS/index.css" />
+{% endblock %}
+<!-- body -->
+{% block body %}
+<div class="container">
+  <div class="hero-section">
+    <div class="slogan max-width">
+      <h1>輕鬆享受台北一日悠閒</h1>
+      <p>探索每個角落，體驗城市的深度旅遊行程</p>
+      <div class="search-bar">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="輸入景點名稱查詢"
+        />
+        <button class="search-button" onclick="searchAttractions()">
+          <img src="../static/IMG/search.png" alt="search" />
+        </button>
       </div>
     </div>
+  </div>
 
-    <div class="container">
-      <div class="frozen">
-        <div class="navigation max-width">
-          <a href="/">台北一日遊</a>
-          <div class="navigation-button">
-            <div class="button">預定行程</div>
-            <div class="button" onclick="openSignin()">登入/註冊</div>
-          </div>
+  <div class="main max-width">
+    <div class="list-bar">
+      <button class="scroll-button prev-button" onclick="scrollPrev()">
+        <div class="image-container left-arrow">
+          <img
+            src="../static/IMG/Default_left.png"
+            alt="previous"
+            class="default-image"
+          />
+          <img
+            src="../static/IMG/Hovered_left.png"
+            alt="previous"
+            class="hovered-image"
+          />
         </div>
-      </div>
-
-      <div class="hero-section">
-        <div class="slogan max-width">
-          <h1>輕鬆享受台北一日悠閒</h1>
-          <p>探索每個角落，體驗城市的深度旅遊行程</p>
-          <div class="search-bar">
-            <input
-              type="text"
-              class="search-input"
-              placeholder="輸入景點名稱查詢"
-            />
-            <button class="search-button" onclick="searchAttractions()">
-              <img src="../static/IMG/search.png" alt="search" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="main max-width">
-        <div class="list-bar">
-          <button class="scroll-button prev-button" onclick="scrollPrev()">
-            <div class="image-container left-arrow">
-              <img
-                src="../static/IMG/Default_left.png"
-                alt="previous"
-                class="default-image"
-              />
-              <img
-                src="../static/IMG/Hovered_left.png"
-                alt="previous"
-                class="hovered-image"
-              />
-            </div>
-          </button>
-          <ul class="list">
-            <!-- 建立對照範本
+      </button>
+      <ul class="list">
+        <!-- 建立對照範本
             <li>劍潭</li>
             <li>圓山</li>
-          --></ul>
-          <button class="scroll-button next-button" onclick="scrollNext()">
-            <div class="image-container right-arrow">
-              <img
-                src="../static/IMG/Default_right.png"
-                alt="next"
-                class="default-image"
-              />
-              <img
-                src="../static/IMG/Hovered_right.png"
-                alt="next"
-                class="hovered-image"
-              />
-            </div>
-          </button>
+          -->
+      </ul>
+      <button class="scroll-button next-button" onclick="scrollNext()">
+        <div class="image-container right-arrow">
+          <img
+            src="../static/IMG/Default_right.png"
+            alt="next"
+            class="default-image"
+          />
+          <img
+            src="../static/IMG/Hovered_right.png"
+            alt="next"
+            class="hovered-image"
+          />
         </div>
+      </button>
+    </div>
 
-        <ul class="attractions">
-          <!-- 建立對照範本
+    <ul class="attractions">
+      <!-- 建立對照範本
             <li class="attraction">
             <img src="../static/IMG/welcome.jpg" alt="" />
             <div class="detail-1">101風景照</div>
@@ -167,13 +74,11 @@
             </div>
           </li>
           <!-->
-        </ul>
-      </div>
-    </div>
-    <div class="footer">
-      <p>COPYRIGHT © 2021 台北一日遊</p>
-    </div>
-
-    <script src="../static/JS/index.js"></script>
-  </body>
-</html>
+    </ul>
+  </div>
+</div>
+{% endblock %}
+<!-- JS -->
+{% block JS %}
+<script src="../static/JS/index.js"></script>
+{% endblock %}
