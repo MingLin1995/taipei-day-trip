@@ -52,8 +52,9 @@ body {
   overflow: hidden;
 }
 /* 註冊視窗 */
-.dialog.signup {
-  height: 332px;
+.dialog.signup,
+.dialog.signin {
+  height: auto;
 }
 
 .decorator-bar {
@@ -110,7 +111,12 @@ body {
   font-weight: 500;
   font-size: 16px;
   text-align: center;
+}
+.cursor {
   cursor: pointer;
+}
+.dialog-main .message {
+  margin-bottom: 10px;
 }
 
 /* ------------------------------導覽列------------------------------ */
