@@ -3,7 +3,7 @@ async function checkToken() {
   //取得後端傳過來的token
   const token = localStorage.getItem("token");
   try {
-    const response = await fetch("http://127.0.0.1:3000/api/user/auth", {
+    const response = await fetch("/api/user/auth", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -31,7 +31,7 @@ async function checkToken() {
 async function logout() {
   const token = localStorage.getItem("token");
   try {
-    const response = await fetch("http://127.0.0.1:3000/api/user/auth", {
+    const response = await fetch("/api/user/auth", {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -126,7 +126,7 @@ async function submitSignup() {
   };
 
   try {
-    const response = await fetch("http://127.0.0.1:3000/api/user", {
+    const response = await fetch("/api/user", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -186,7 +186,7 @@ async function submitSignin() {
   };
 
   try {
-    const response = await fetch("http://127.0.0.1:3000/api/user/auth", {
+    const response = await fetch("/api/user/auth", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

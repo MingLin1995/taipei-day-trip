@@ -4,11 +4,13 @@ import json
 import re
 import jwt  # pip install pyjwt
 from datetime import datetime, timedelta
+from flask_cors import CORS  # 處理跨域問題 pip install flask-cors
 
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False  # FLASK會將JSON資料的ASCII編碼
 app.config["TEMPLATES_AUTO_RELOAD"] = True  # 修改templates會自動載入
+CORS(app)  # 啟用CORS
 
 header = {
     "alg": "HS256",  # 簽名技術
