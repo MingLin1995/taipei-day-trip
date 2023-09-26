@@ -17,10 +17,12 @@ async function checkToken() {
       // 使用者已登入，顯示「登出系統」
       loginButton.innerText = "登出系统";
       loginButton.onclick = logout;
+      return data;
     } else {
       // 使用者未登入，顯示「登入/註冊」
       loginButton.innerText = "登入/註冊";
       loginButton.onclick = openSignin;
+      return false;
     }
   } catch (error) {
     console.error("連接錯誤:", error);
@@ -208,5 +210,15 @@ async function submitSignin() {
     }
   } catch (error) {
     console.error("連接錯誤:", error);
+  }
+}
+
+/* ---------------------------預定頁面--------------------------- */
+async function booking() {
+  const isLoggedIn = await checkToken();
+  if (isLoggedIn) {
+    window.location.href = "/booking"; //有登錄轉跳預定頁面
+  } else {
+    openSignin(); //沒登入就開啟登入視窗
   }
 }

@@ -135,3 +135,83 @@ const setDefaults = dateInput._flatpickr;
 function openFlatpickr() {
   setDefaults.open();
 }
+
+/* ------------------預約行程------------------ */
+async function submitBooking() {
+  const bookingData = bookingCheck();
+
+  if (!bookingData) {
+    alert("請選擇完整的預定行程");
+    return;
+  }
+
+  //取得後端傳過來的token
+  const token = localStorage.getItem("token");
+
+  try {
+    const response = await fetch("/api/booking", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bookingData),
+    });
+
+    const data = await response.json();
+
+    if (response.status === 200) {
+      // 轉預定頁面
+      window.location.href = "/booking";
+    } else if (response.status === 403) {
+      // 未登錄
+      console.error(data["message"]);
+      openSignin();
+    } else if (response.status === 400) {
+      // 資料輸入不正確
+      console.error(data["message"]);
+    } else if (response.status === 500) {
+      // 伺服器錯誤
+      console.error(data["message"]);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function bookingCheck() {
+  //景點ID
+  const url = window.location.href;
+  const urlParts = url.split("/");
+  const attractionId = urlParts[urlParts.length - 1];
+  //日期
+  const dateInput = document.querySelector(".date-input");
+  const selectedDate = dateInput.value;
+  //時間、價格
+  let selectedTime = "";
+  let price = "";
+  const amButton = document.querySelector(".am");
+  const pmButton = document.querySelector(".pm");
+  //檢查圖片名稱，找出被選擇的選項
+  if (amButton.querySelector("img").src.endsWith("btn_select.png")) {
+    selectedTime = "morning";
+    price = "2000";
+  } else if (pmButton.querySelector("img").src.endsWith("btn_select.png")) {
+    selectedTime = "afternoon";
+    price = "2500";
+  }
+
+  // 檢查選項是否沒有選到
+  if (!attractionId || !selectedDate || !selectedTime || !price) {
+    return null; // 數據不完整
+  }
+
+  const bookingData = {
+    attractionId: parseInt(attractionId),
+    date: selectedDate,
+    time: selectedTime,
+    price: parseFloat(price),
+  };
+
+  return bookingData;
+}
