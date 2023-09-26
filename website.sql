@@ -22,3 +22,17 @@ CREATE TABLE token (
 );
 
 SELECT * FROM token;
+
+CREATE TABLE booking (
+    id INT  PRIMARY KEY AUTO_INCREMENT,
+    member_id INT NOT NULL,
+    attractionId INT NOT NULL,
+    date DATE,
+    time VARCHAR(255),
+    price DECIMAL(10),
+    FOREIGN KEY (member_id) REFERENCES member(id)
+);
+
+SELECT * FROM booking;
+
+#DROP TABLE booking;
