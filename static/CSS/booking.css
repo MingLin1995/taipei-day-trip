@@ -26,6 +26,14 @@
   margin-bottom: 30px;
   line-height: 27px;
 }
+.empty {
+  padding-left: 100px; /* 1200-1000 /2 */
+  display: inline-block;
+  width: 100%;
+  margin-top: 10px;
+  font-weight: 500;
+  line-height: 24px;
+}
 .h3 {
   font-weight: 700;
   font-size: 19px;
@@ -33,6 +41,7 @@
 }
 .h4 {
   font-weight: 700;
+  line-height: 23.17px;
 }
 
 .title {
@@ -46,7 +55,7 @@
   display: flex;
   position: relative;
 }
-@media (max-width: 768px) {
+@media (max-width: 920px) {
   .section {
     flex-direction: column;
     margin-bottom: 60px;
@@ -56,9 +65,25 @@
   width: 250px;
   height: 200px;
 }
+@media (max-width: 920px) {
+  .section img {
+    height: 500px;
+    width: 100%;
+  }
+}
 @media (max-width: 768px) {
   .section img {
-    width: 100%;
+    height: 400px;
+  }
+}
+@media (max-width: 576px) {
+  .section img {
+    height: 300px;
+  }
+}
+@media (max-width: 400px) {
+  .section img {
+    height: 200px;
   }
 }
 .section .del1 {
@@ -67,11 +92,12 @@
   position: absolute;
   top: 0;
   right: 110px;
+  cursor: pointer;
 }
 .section .del2 {
   display: none;
 }
-@media (max-width: 768px) {
+@media (max-width: 920px) {
   .section .del1 {
     display: none;
   }
@@ -81,6 +107,7 @@
     height: 30px;
     position: absolute;
     right: 10px;
+    cursor: pointer;
   }
 }
 input {
@@ -98,7 +125,7 @@ input {
 .infor {
   margin-left: 30px;
 }
-@media (max-width: 768px) {
+@media (max-width: 920px) {
   .infor {
     margin-top: 30px;
     margin-left: 0px;
@@ -124,8 +151,19 @@ input {
   align-items: center;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 920px) {
   .p10 {
     padding: 0px 10px;
   }
+}
+
+.footer {
+  bottom: -144px;
+}
+
+.footer.special {
+  height: 100%;
+  top: 215px; /* 161+54 */
+  align-items: start;
+  padding-top: 40px;
 }

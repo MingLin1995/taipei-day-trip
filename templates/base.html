@@ -104,7 +104,7 @@
       <div class="navigation max-width">
         <a href="/">台北一日遊</a>
         <div class="navigation-button">
-          <div class="button">預定行程</div>
+          <div class="button" onclick="booking()">預定行程</div>
           <div class="button" id="loginButton" onclick="openSignin()">
             登入/註冊
           </div>
@@ -115,7 +115,11 @@
 
     {% block body %}{% endblock %}
 
-    <div class="footer">
+    <div class="footer special">
+      <p>COPYRIGHT © 2021 台北一日遊</p>
+    </div>
+
+    <div class="footer normal">
       <p>COPYRIGHT © 2021 台北一日遊</p>
     </div>
 
