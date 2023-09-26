@@ -1,8 +1,10 @@
 from flask import *
+from model.JWT import validate_token
 from model.database import connection_pool, execute_query
+import jwt
 from datetime import datetime, timedelta
 import re
-import jwt  # pip install pyjwt
+
 
 # 使用 Blueprint 創建路由
 user_bp = Blueprint('user', __name__)
@@ -95,12 +97,12 @@ def signin():
                     "message": "密碼格式不正確，請輸入英文或數字，至少六個字元"}
         return jsonify(response)
 
+    # 從資料庫中取得使用者的相關資訊
     member_data = signin_check(email, password)
 
     if member_data is None:
         return jsonify({"error": True, "message": "email或密碼輸入錯誤"})
     else:
-        # 從資料庫中取得使用者的相關資訊
         member_id = member_data[0]
         member_name = member_data[1]
 
@@ -112,8 +114,10 @@ def signin():
                    'name': member_name,
                    'email': email,
                    'exp': datetime.utcnow() + timedelta(days=7)}     # UTCNOW為當前時間，設定過期時間為七天後
+
         token = jwt.encode(
             payload, secret_key, algorithm="HS256", headers=header)
+
         # 將新建立的token存入資料庫
         save_token(member_id, token)
         return jsonify({"token": token})
@@ -131,72 +135,42 @@ def signin_check(email, password):
 
 
 def save_token(member_id, token):
-    connection = connection_pool.get_connection()
-    cur = connection.cursor()
-
     # 檢查是否已存在該 member_id 的 token 記錄
     find_token_sql = "SELECT member_id FROM token WHERE member_id = %s"
-    cur.execute(find_token_sql, (member_id,))
-    old_token_id = cur.fetchone()
+    old_token_id = execute_query(
+        connection_pool, find_token_sql, (member_id,), fetch_one=True)
 
     # 如果有 token 刪除舊的 token 記錄
     if old_token_id:
         delete_token_sql = "DELETE FROM token WHERE member_id = %s"
-        cur.execute(delete_token_sql, (old_token_id[0],))
+        execute_query(connection_pool, delete_token_sql,
+                      (old_token_id[0],), commit=True)
         reset_id = "ALTER TABLE token AUTO_INCREMENT = 1"
-        cur.execute(reset_id)
+        execute_query(connection_pool, reset_id, commit=True)
 
-    # 如果沒有 token ，則新增 token到資料庫
+    # 如果沒有 token ，則新增 token 到資料庫
     insert_token_sql = "INSERT INTO token (member_id, token) VALUES (%s, %s)"
-    cur.execute(insert_token_sql, (member_id, token))
-    connection.commit()
-
-    cur.close()
-    connection.close()
+    execute_query(connection_pool, insert_token_sql,
+                  (member_id, token), commit=True)
 
 
-""" ---------------------------Token檢查--------------------------- """
-""" 驗證token """
+""" 取得登入會員資訊 """
 
 
 @user_bp.route("/api/user/auth", methods=["GET"])
-def verify_token():
-    # 取得前端傳過來的token
-    token = request.headers.get("Authorization")
-    token = token.replace("Bearer ", "")
-
-    try:
-        # 使用 current_app 取得 SECRET_KEY
-        secret_key = current_app.config['SECRET_KEY']
-
-        decoded_token = jwt.decode(
-            token, secret_key, algorithms=["HS256"])
-        id = decoded_token.get("id")
-
-        if check_token(id, token):
-            name = decoded_token.get("name")
-            email = decoded_token.get("email")
-            return jsonify({"data": {
-                "id": id,
-                "name": name,
-                "email": email
-            }})
-        else:
-            return jsonify(None)
-    except jwt.ExpiredSignatureError:
-        return jsonify(None)
-    except jwt.DecodeError:
-        return jsonify(None)
-
-
-def check_token(id, token):
-    sql = "SELECT token FROM token WHERE member_id = %s"
-    result = execute_query(connection_pool, sql, (id,), fetch_one=True)
-    # 如果有token且與回傳token相符
-    if result and result[0] == token:
-        return True
+def get_user_inf():
+    token_data = validate_token()
+    if token_data is not None:
+        id = token_data.get("id")
+        name = token_data.get("name")
+        email = token_data.get("email")
+        return jsonify({"data": {
+            "id": id,
+            "name": name,
+            "email": email
+        }})
     else:
-        return False
+        return jsonify(None)
 
 
 """ 登出 """

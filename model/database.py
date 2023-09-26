@@ -1,5 +1,6 @@
 import mysql.connector.pooling
 
+# 景點資料庫
 db_TP_data = {
     "host": "localhost",
     "user": "root",
@@ -9,6 +10,8 @@ db_TP_data = {
 }
 connection_pool_TP_data = mysql.connector.pooling.MySQLConnectionPool(
     **db_TP_data)
+
+# 會員系統資料庫
 
 db_member = {
     "host": "localhost",
@@ -32,6 +35,22 @@ def execute_query(connection_pool, sql, parameter=None, fetch_one=False, commit=
         data = cur.fetchone()
     else:
         data = cur.fetchall()
+
+    if commit:
+        connection.commit()
+
+    cur.close()
+    connection.close()
+    return data
+
+
+def execute_query_test(connection_pool_TP_data, sql, parameter=None, fetch_one=False, commit=False):
+    connection = connection_pool_TP_data.get_connection()
+    cur = connection.cursor()
+
+    cur.execute(sql, parameter)
+
+    data = cur.fetchone() if fetch_one else cur.fetchall()
 
     if commit:
         connection.commit()
