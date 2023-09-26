@@ -1,6 +1,6 @@
 from flask import *
 import json
-from model.database import connection_pool_TP_data
+from model.database import connection_pool_TP_data, execute_query
 
 # 使用 Blueprint 創建路由
 attractions_bp = Blueprint('attractions', __name__)
@@ -31,9 +31,6 @@ def attractions_data():
 
 
 def get_attractions_data(page, keyword):
-    connection = connection_pool_TP_data.get_connection()
-    cursor = connection.cursor(dictionary=True)
-
     items_per_page = 12  # 一次顯示12筆
     offset = page * items_per_page  # 從第幾項開始顯示
 
@@ -61,10 +58,7 @@ def get_attractions_data(page, keyword):
             LIMIT %s, %s
         """
         keyword_pattern = f"%{keyword}%"
-        cursor.execute(query, (keyword_pattern, keyword,
-                       offset, items_per_page+1))
-        result = cursor.fetchall()
-
+        parameter = (keyword_pattern, keyword, offset, items_per_page + 1)
     else:  # 頁數搜尋
         query = """
             SELECT
@@ -86,32 +80,65 @@ def get_attractions_data(page, keyword):
                 a.id
             LIMIT %s, %s
         """
-        cursor.execute(query, (offset, items_per_page+1))
-        result = cursor.fetchall()
+        parameter = (offset, items_per_page + 1)
+
+    result = execute_query(connection_pool_TP_data, query, parameter)
 
     # 用多查詢一筆的方式去判斷是否還有下一頁
     next_page = None
     if len(result) > items_per_page:
         next_page = page + 1
-        result = result[:items_per_page]  # 只返回前12条数据
+        result = result[:items_per_page]  # 只取前12筆資料
 
     data = []
 
     for row in result:
-        attraction_id = row["id"]
-        images = get_attraction_images(attraction_id, cursor)
-        row["images"] = images
-        row["lat"] = float(row["lat"])
-        row["lng"] = float(row["lng"])
-        data.append(row)
+        # 將元組轉換為列表，以便修改資料
+        row_list = list(row)
+        attraction_id = row_list[0]
+        images = get_attraction_images(attraction_id, connection_pool_TP_data)
+        row_list[9] = images
+        row_list[7] = float(row_list[7])
+        row_list[8] = float(row_list[8])
 
-    cursor.close()
-    connection.close()
+        # 將修改後的列表轉換為字典形式
+        formatted_row = {
+            "id": row_list[0],
+            "name": row_list[1],
+            "category": row_list[2],
+            "description": row_list[3],
+            "address": row_list[4],
+            "transport": row_list[5],
+            "mrt": row_list[6],
+            "lat": row_list[7],
+            "lng": row_list[8],
+            "images": row_list[9]
+        }
+        data.append(formatted_row)
 
-    return {
+    response_data = {
         "nextPage": next_page,
         "data": data
     }
+
+    return response_data
+
+
+def get_attraction_images(attraction_id, connection_pool_TP_data):
+    image_query = """
+    SELECT
+        i.image_url
+    FROM
+        images i
+    WHERE
+        i.attraction_id = %s
+    """
+    parameter = (attraction_id,)
+
+    image_results = execute_query(
+        connection_pool_TP_data, image_query, parameter)
+    images = [image_result[0] for image_result in image_results]
+    return images
 
 
 """ 根據景點編號取得景點資料 """
@@ -120,7 +147,7 @@ def get_attractions_data(page, keyword):
 @attractions_bp.route("/api/attractions/<int:attractionId>")
 def get_attraction(attractionId):
     try:
-        attraction = get_attraction_data(attractionId)
+        attraction = get_attraction_data(attractionId, connection_pool_TP_data)
         if attraction is not None:
             json_data = json.dumps(attraction)
             response = Response(
@@ -140,7 +167,40 @@ def get_attraction(attractionId):
         return jsonify(error_response), 500
 
 
-def get_basic_attraction_info(attraction_id, cursor):
+def get_attraction_data(attraction_id, connection_pool_TP_data):
+    # 取得基本資訊
+    basic_info = get_basic_attraction_info(
+        attraction_id, connection_pool_TP_data)
+
+    if basic_info:
+        # 將基本資訊轉換成 JSON 格式
+        formatted_info = {
+            "data": {
+                "id": basic_info[0],
+                "name": basic_info[1],
+                "category": basic_info[2],
+                "description": basic_info[3],
+                "address": basic_info[4],
+                "transport": basic_info[5],
+                "mrt": basic_info[6],
+                "lat": float(basic_info[7]),
+                "lng": float(basic_info[8]),
+                "images": []
+            }
+        }
+
+        # 取得圖片資訊
+        images = get_attraction_images(basic_info[0], connection_pool_TP_data)
+
+        # 將圖片資訊添加到 formatted_info 中
+        formatted_info["data"]["images"] = images
+
+        return formatted_info
+    else:
+        return None
+
+
+def get_basic_attraction_info(attraction_id, connection_pool_TP_data):
     # 取得基本資訊
     query = """
         SELECT
@@ -158,49 +218,7 @@ def get_basic_attraction_info(attraction_id, cursor):
         WHERE
             a.id = %s
     """
-
-    cursor.execute(query, (attraction_id,))
-    result = cursor.fetchone()
+    parameter = (attraction_id,)
+    result = execute_query(
+        connection_pool_TP_data, query, parameter, fetch_one=True)
     return result
-
-
-def get_attraction_images(attraction_id, cursor):
-    # 圖片URL
-    image_query = """
-    SELECT
-        i.image_url
-    FROM
-        images i
-    WHERE
-        i.attraction_id = %s
-    """
-    cursor.execute(image_query, (attraction_id,))
-    image_results = cursor.fetchall()
-    images = [image_result['image_url'] for image_result in image_results]
-    return images
-
-
-def get_attraction_data(attraction_id):
-    connection = connection_pool_TP_data.get_connection()
-    cursor = connection.cursor(dictionary=True)
-
-    # 取得基本資訊
-    basic_info = get_basic_attraction_info(attraction_id, cursor)
-
-    if basic_info:
-        # 取得圖片資訊
-        images = get_attraction_images(attraction_id, cursor)
-
-        # 合并结果
-        basic_info["images"] = images
-        basic_info["lat"] = float(basic_info["lat"])
-        basic_info["lng"] = float(basic_info["lng"])
-
-        cursor.close()
-        connection.close()
-
-        return {"data": basic_info}
-    else:
-        cursor.close()
-        connection.close()
-        return None

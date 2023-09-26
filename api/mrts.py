@@ -1,5 +1,5 @@
 from flask import *
-from model.database import connection_pool_TP_data
+from model.database import connection_pool_TP_data, execute_query
 
 # 使用 Blueprint 創建路由
 mrts_bp = Blueprint('mrts', __name__)
@@ -10,7 +10,7 @@ mrts_bp = Blueprint('mrts', __name__)
 @mrts_bp.route("/api/mrts")
 def get_mrts():
     try:
-        mrts = get_mrt_names()
+        mrts = get_mrt_names(connection_pool_TP_data)
         return jsonify(mrts), 200
     except Exception:
         error_response = {
@@ -20,10 +20,7 @@ def get_mrts():
         return jsonify(error_response), 500
 
 
-def get_mrt_names():
-    connection = connection_pool_TP_data.get_connection()
-    cursor = connection.cursor(dictionary=True)
-
+def get_mrt_names(connection_pool_TP_data):
     query = """
         SELECT a.mrt 
         FROM attractions a
@@ -31,19 +28,15 @@ def get_mrt_names():
         ORDER BY COUNT(*) DESC, a.mrt
     """
 
-    cursor.execute(query)
-    result = cursor.fetchall()
+    result = execute_query(connection_pool_TP_data, query)
 
     mrts = []
     count = 0
     for row in result:
-        if row["mrt"] is not None:
-            mrts.append(row["mrt"])
+        if row[0] is not None:
+            mrts.append(row[0])
             count += 1
             if count >= 40:
                 break
-
-    cursor.close()
-    connection.close()
 
     return {"data": mrts}

@@ -4,6 +4,7 @@ from flask_cors import CORS  # 處理跨域問題 pip install flask-cors
 from api.attractions import attractions_bp
 from api.mrts import mrts_bp
 from api.user import user_bp
+from api.booking import booking_bp
 
 
 app = Flask(__name__)
@@ -14,10 +15,11 @@ app.config['SECRET_KEY'] = "密鑰可以是任何的字串，但是不要告訴�
 CORS(app)  # 啟用CORS
 
 
-# 註冊 Blueprint 並指定 url_prefix
+# 註冊 Blueprint
 app.register_blueprint(attractions_bp)
 app.register_blueprint(mrts_bp)
 app.register_blueprint(user_bp)
+app.register_blueprint(booking_bp)
 
 
 # Pages
