@@ -1,6 +1,6 @@
 from flask import *
 from model.JWT import validate_token
-from model.database import connection_pool, connection_pool_TP_data, execute_query
+from model.database import connection_pool_TP_data,  execute_query
 
 
 # 使用 Blueprint 創建路由
@@ -40,21 +40,21 @@ def create_booking(token_data, booking_data):
     existing_booking_sql = "SELECT id FROM booking WHERE member_id = %s"
     existing_booking_params = (member_id,)
     existing_booking = execute_query(
-        connection_pool, existing_booking_sql, existing_booking_params, fetch_one=True)
+        connection_pool_TP_data, existing_booking_sql, existing_booking_params, fetch_one=True)
 
     if existing_booking:
         # 存在的話先刪除
         delete_booking_sql = "DELETE FROM booking WHERE id = %s"
         delete_booking_params = (existing_booking[0],)
-        execute_query(connection_pool, delete_booking_sql,
+        execute_query(connection_pool_TP_data, delete_booking_sql,
                       delete_booking_params, commit=True)
         reset_id = "ALTER TABLE booking AUTO_INCREMENT = 1"
-        execute_query(connection_pool, reset_id, commit=True)
+        execute_query(connection_pool_TP_data, reset_id, commit=True)
 
     # 新增訂單
     sql = "INSERT INTO booking (member_id, attractionId, date, time, price) VALUES (%s, %s, %s, %s, %s)"
     values = (member_id, attractionId, date, time, price)
-    execute_query(connection_pool, sql, values, commit=True)
+    execute_query(connection_pool_TP_data, sql, values, commit=True)
 
     return True
 
@@ -81,35 +81,34 @@ def find_booking_inf(token_data):
     member_id = token_data.get("id")
 
     # 搜尋訂單資料
-    sql = "SELECT * FROM booking WHERE member_id = %s"
-    result = execute_query(connection_pool, sql, (member_id,), fetch_one=True)
+    sql = """
+        SELECT b.date, b.time, b.price, a.id, a.name, a.address, i.image_url
+        FROM booking b
+        JOIN attractions a ON b.attractionId = a.id
+        LEFT JOIN images i ON b.attractionId = i.attraction_id
+        WHERE b.member_id = %s
+    """
+    result = execute_query(connection_pool_TP_data, sql, (member_id,))
 
     if result:
-        attraction_id = result[2]
-
-        # 搜尋景點資料
-        sql = "SELECT * FROM attractions WHERE id = %s"
-        attraction_result = execute_query(
-            connection_pool_TP_data, sql, (attraction_id,), fetch_one=True)
-
-        # 搜尋景點圖片
-        sql = "SELECT image_url FROM images WHERE attraction_id = %s LIMIT 1"
-        image_result = execute_query(
-            connection_pool_TP_data, sql, (attraction_id,), fetch_one=True)
+        data = result[0]
+        date = data[0]
+        time = data[1]
+        price = data[2]
 
         attraction_data = {
-            "id": attraction_result[0],
-            "name": attraction_result[1],
-            "address": attraction_result[4],
-            "image": image_result[0]
+            "id": data[3],
+            "name": data[4],
+            "address": data[5],
+            "image": data[6]
         }
 
         booking_data = {
             "data": {
                 "attraction": attraction_data,
-                "date": str(result[3]),
-                "time": result[4],
-                "price": result[5]
+                "date": str(date),
+                "time": time,
+                "price": price
             }
         }
 
@@ -138,7 +137,7 @@ def del_booking_inf(token_data):
     member_id = token_data.get("id")
     delete_booking_sql = "DELETE FROM booking WHERE member_id = %s"
     delete_booking_params = (member_id,)
-    execute_query(connection_pool, delete_booking_sql,
+    execute_query(connection_pool_TP_data, delete_booking_sql,
                   delete_booking_params, commit=True)
     reset_id = "ALTER TABLE booking AUTO_INCREMENT = 1"
-    execute_query(connection_pool, reset_id, commit=True)
+    execute_query(connection_pool_TP_data, reset_id, commit=True)

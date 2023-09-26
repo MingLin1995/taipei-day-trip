@@ -1,6 +1,6 @@
 from flask import *
 import json
-from model.database import connection_pool_TP_data, execute_query_test
+from model.database import connection_pool_TP_data, execute_query
 
 # 使用 Blueprint 創建路由
 attractions_bp = Blueprint('attractions', __name__)
@@ -82,7 +82,7 @@ def get_attractions_data(page, keyword):
         """
         parameter = (offset, items_per_page + 1)
 
-    result = execute_query_test(connection_pool_TP_data, query, parameter)
+    result = execute_query(connection_pool_TP_data, query, parameter)
 
     # 用多查詢一筆的方式去判斷是否還有下一頁
     next_page = None
@@ -135,7 +135,7 @@ def get_attraction_images(attraction_id, connection_pool_TP_data):
     """
     parameter = (attraction_id,)
 
-    image_results = execute_query_test(
+    image_results = execute_query(
         connection_pool_TP_data, image_query, parameter)
     images = [image_result[0] for image_result in image_results]
     return images
@@ -219,6 +219,6 @@ def get_basic_attraction_info(attraction_id, connection_pool_TP_data):
             a.id = %s
     """
     parameter = (attraction_id,)
-    result = execute_query_test(
+    result = execute_query(
         connection_pool_TP_data, query, parameter, fetch_one=True)
     return result

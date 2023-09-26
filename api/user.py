@@ -1,6 +1,6 @@
 from flask import *
 from model.JWT import validate_token
-from model.database import connection_pool, execute_query
+from model.database import connection_pool_TP_data, execute_query
 import jwt
 from datetime import datetime, timedelta
 import re
@@ -62,7 +62,7 @@ def signup():
 
 def signup_check(email):
     sql = "SELECT * FROM member WHERE email = %s"
-    return execute_query(connection_pool, sql, (email,), fetch_one=True)
+    return execute_query(connection_pool_TP_data, sql, (email,), fetch_one=True)
 
 
 """ 新註冊姓名、帳號、密碼 """
@@ -70,7 +70,7 @@ def signup_check(email):
 
 def signup_new_user(name, email, password):
     sql = "INSERT INTO member (name, email, password) VALUES (%s, %s, %s)"
-    execute_query(connection_pool, sql,
+    execute_query(connection_pool_TP_data, sql,
                   (name, email, password), commit=True)
 
 
@@ -128,7 +128,7 @@ def signin():
 
 def signin_check(email, password):
     sql = "SELECT * FROM member WHERE email = %s AND password = %s"
-    return execute_query(connection_pool, sql, (email, password), fetch_one=True)
+    return execute_query(connection_pool_TP_data, sql, (email, password), fetch_one=True)
 
 
 """ 將token存入資料庫 """
@@ -138,19 +138,19 @@ def save_token(member_id, token):
     # 檢查是否已存在該 member_id 的 token 記錄
     find_token_sql = "SELECT member_id FROM token WHERE member_id = %s"
     old_token_id = execute_query(
-        connection_pool, find_token_sql, (member_id,), fetch_one=True)
+        connection_pool_TP_data, find_token_sql, (member_id,), fetch_one=True)
 
     # 如果有 token 刪除舊的 token 記錄
     if old_token_id:
         delete_token_sql = "DELETE FROM token WHERE member_id = %s"
-        execute_query(connection_pool, delete_token_sql,
+        execute_query(connection_pool_TP_data, delete_token_sql,
                       (old_token_id[0],), commit=True)
         reset_id = "ALTER TABLE token AUTO_INCREMENT = 1"
-        execute_query(connection_pool, reset_id, commit=True)
+        execute_query(connection_pool_TP_data, reset_id, commit=True)
 
     # 如果沒有 token ，則新增 token 到資料庫
     insert_token_sql = "INSERT INTO token (member_id, token) VALUES (%s, %s)"
-    execute_query(connection_pool, insert_token_sql,
+    execute_query(connection_pool_TP_data, insert_token_sql,
                   (member_id, token), commit=True)
 
 
@@ -190,17 +190,17 @@ def delete_token(token):
     try:
         # 先解除刪除的安全機制
         sql_1 = "set sql_safe_updates=0"
-        execute_query(connection_pool, sql_1, commit=True)
+        execute_query(connection_pool_TP_data, sql_1, commit=True)
 
         # 執行刪除
         sql_2 = "DELETE FROM token WHERE token = %s"
-        execute_query(connection_pool, sql_2, (token,), commit=True)
+        execute_query(connection_pool_TP_data, sql_2, (token,), commit=True)
         reset_id = "ALTER TABLE token AUTO_INCREMENT = 1"
-        execute_query(connection_pool, reset_id, commit=True)
+        execute_query(connection_pool_TP_data, reset_id, commit=True)
 
         # 恢復安全機制
         sql_3 = "set sql_safe_updates=1"
-        execute_query(connection_pool, sql_3, commit=True)
+        execute_query(connection_pool_TP_data, sql_3, commit=True)
 
         return True
     except Exception as e:
