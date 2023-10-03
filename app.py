@@ -5,6 +5,7 @@ from api.attractions import attractions_bp
 from api.mrts import mrts_bp
 from api.user import user_bp
 from api.booking import booking_bp
+from api.thankyou import thankyou_bp
 
 
 app = Flask(__name__)
@@ -20,6 +21,7 @@ app.register_blueprint(attractions_bp)
 app.register_blueprint(mrts_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(booking_bp)
+app.register_blueprint(thankyou_bp)
 
 
 # Pages

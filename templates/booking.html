@@ -4,6 +4,7 @@
 <!-- CSS -->
 {% block CSS %}
 <link rel="stylesheet" href="../static/CSS/booking.css" />
+<script src="https://js.tappaysdk.com/sdk/tpdirect/v5.17.0"></script>
 {% endblock %}
 <!-- body -->
 {% block body %}
@@ -56,7 +57,7 @@
     <h3 class="h3">您的聯絡資訊</h3>
     聯絡姓名：<input type="text" class="mb15" id="contactName" /><br />
     聯絡信箱：<input type="text" class="mb15" id="contactEmail" /><br />
-    手機號碼：<input type="text" class="mb15" /><br />
+    手機號碼：<input type="text" class="mb15" id="contactPhone" /><br />
     <p class="h4">
       請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。
     </p>
@@ -64,18 +65,32 @@
   <div class="separator .max-width mb40"></div>
   <div class="payment w100 pl110 mb40 p10">
     <h3 class="h3">信用卡付款資訊</h3>
-    卡片號碼：<input
+    <!-- 卡片號碼：<input
       type="text"
       class="mb15"
       placeholder="**** **** **** ****"
     /><br />
     過期時間：<input type="text" class="mb15" placeholder="MM/YY" /><br />
-    驗證密碼：<input type="text" class="mb15" placeholder="CVV" /><br />
+    驗證密碼：<input type="text" class="mb15" placeholder="CVV" /><br /> -->
+
+    <div class="df">
+      卡片號碼：
+      <div class="tpfield" id="card-number"></div>
+    </div>
+
+    <div class="df">
+      過期時間：
+      <div class="tpfield" id="card-expiration-date"></div>
+    </div>
+    <div class="df">
+      驗證密碼：
+      <div class="tpfield" id="card-ccv"></div>
+    </div>
   </div>
   <div class="separator .max-width mb40"></div>
   <div class="confirm w100 pl110 p10">
     <p class="h4">總價：<span id="priceText">新台幣 2,000 元</span></p>
-    <div class="booking">確認訂購並付款</div>
+    <div class="booking" onclick="onSubmit(event)">確認訂購並付款</div>
   </div>
 </div>
 
