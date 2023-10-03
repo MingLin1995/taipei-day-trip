@@ -89,8 +89,9 @@ def find_booking_inf(token_data):
         FROM booking b
         JOIN attractions a ON b.attractionId = a.id
         LEFT JOIN images i ON b.attractionId = i.attraction_id
-        WHERE b.member_id = %s
+        WHERE b.member_id = %s AND b.status = 1
     """
+
     result = execute_query(connection_pool_TP_data, sql, (member_id,))
 
     if result:
@@ -128,22 +129,15 @@ def find_booking_inf(token_data):
 def del_booking():
     try:
         token_data = validate_token()
+        member_id = token_data.get("id")
+
         if token_data is None:
             return jsonify({"error": True, "message": "未登入系統，拒絕存取"}), 403
-        booking_inf = del_booking_inf(token_data)
-        return jsonify(booking_inf), 200
+
+        update_booking_status(member_id)  # 狀態改為0，代表刪除
+        return jsonify({"ok": True}), 200
     except Exception:
         return jsonify({"error": True, "message": "伺服器內部錯誤"}), 500
-
-
-def del_booking_inf(token_data):
-    member_id = token_data.get("id")
-    delete_booking_sql = "DELETE FROM booking WHERE member_id = %s"
-    delete_booking_params = (member_id,)
-    execute_query(connection_pool_TP_data, delete_booking_sql,
-                  delete_booking_params, commit=True)
-    reset_id = "ALTER TABLE booking AUTO_INCREMENT = 1"
-    execute_query(connection_pool_TP_data, reset_id, commit=True)
 
 
 """ 訂單付款 """
@@ -162,7 +156,9 @@ def corder():
         if order_number:
 
             # 將資訊傳送到TapPay伺服器
-            payment_info = process_payment(order_data, order_number)
+            member_id = token_data.get("id")
+
+            payment_info = process_payment(order_data, order_number, member_id)
 
             # 將訂單狀態回傳給前端
             if payment_info:
@@ -218,7 +214,7 @@ MERCHANT_ID = config('MERCHANT_ID')
 # 將資訊傳送到TapPay伺服器
 
 
-def process_payment(order_data, order_number):
+def process_payment(order_data, order_number, member_id):
 
     prime = order_data.get('prime')
     details = "TapPay Test"
@@ -255,7 +251,7 @@ def process_payment(order_data, order_number):
             payment_result = response.json()
             if payment_result.get('status') == 0:  # 狀態為0表示成功
                 # 支付成功，更新訂單狀態改為0
-                update_order_status(order_number)
+                update_booking_status(member_id)
 
                 payment_info = {
                     "number": order_number,
@@ -270,9 +266,9 @@ def process_payment(order_data, order_number):
         return jsonify(message='Internal server error', error=str(e)), 500
 
 
-def update_order_status(order_number):
-    sql_update = "UPDATE orders SET status = 0 WHERE number = %s"
-    update_params = (order_number,)
+def update_booking_status(member_id):
+    sql_update = "UPDATE booking SET status = 0 WHERE member_id = %s"
+    update_params = (member_id,)
     execute_query(connection_pool_TP_data, sql_update,
                   update_params, commit=True)
 

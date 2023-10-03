@@ -1,5 +1,5 @@
 SHOW DATABASES; 
-CREATE DATABASE TP_data; 
+/*CREATE DATABASE TP_data; */
 
 USE TP_data; 
 SHOW TABLES;
@@ -51,14 +51,14 @@ CREATE TABLE booking (
     date DATE,
     time VARCHAR(255),
     price DECIMAL(10),
-    FOREIGN KEY (member_id) REFERENCES member(id)
+    FOREIGN KEY (member_id) REFERENCES member(id),
+	status INT NOT NULL DEFAULT 1
 );
 SELECT * FROM booking;
 
 CREATE TABLE orders (
     id INT  PRIMARY KEY AUTO_INCREMENT,
     number VARCHAR(255) NOT NULL,
-    status INT NOT NULL DEFAULT 1,
 	name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL ,
     phone VARCHAR(255) NOT NULL,
@@ -67,4 +67,4 @@ CREATE TABLE orders (
 
 SELECT * FROM orders;
 
-/*DROP table orders;*/
+/*DROP table booking;*/
