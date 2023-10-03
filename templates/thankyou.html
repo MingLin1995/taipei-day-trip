@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+<!-- title -->
+<title>{% block title %}付款完成頁面{% endblock %}</title>
+<!-- CSS -->
+{% block CSS %}
+<link rel="stylesheet" href="../static/CSS/thankyou.css" />
+{% endblock %}
+<!-- body -->
+{% block body %}
+
+<div class="container max-width" id="frame1">
+  <div class="headline w100 h3 p10">
+    <div class="h2" id="successMessage">行程預定成功</div>
+    <div class="h2" id="order">您的訂單編號如下</div>
+    <div class="h3" id="orderNumber"></div>
+    <div class="h3" id="orderInfo">請記住此編號，或到會員中心查詢歷史訂單</div>
+  </div>
+</div>
+
+{% endblock %}
+<!-- JS -->
+{% block JS %}
+<script src="../static/JS/thankyou.js"></script>
+{% endblock %}

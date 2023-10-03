@@ -1,6 +1,9 @@
 from flask import *
 from model.JWT import validate_token
 from model.database import connection_pool_TP_data,  execute_query
+import requests  # pip install requests
+import random
+from decouple import config  # pip install python-decouple 讀取.env
 
 
 # 使用 Blueprint 創建路由
@@ -86,8 +89,9 @@ def find_booking_inf(token_data):
         FROM booking b
         JOIN attractions a ON b.attractionId = a.id
         LEFT JOIN images i ON b.attractionId = i.attraction_id
-        WHERE b.member_id = %s
+        WHERE b.member_id = %s AND b.status = 1
     """
+
     result = execute_query(connection_pool_TP_data, sql, (member_id,))
 
     if result:
@@ -125,19 +129,157 @@ def find_booking_inf(token_data):
 def del_booking():
     try:
         token_data = validate_token()
+        member_id = token_data.get("id")
+
         if token_data is None:
             return jsonify({"error": True, "message": "未登入系統，拒絕存取"}), 403
-        booking_inf = del_booking_inf(token_data)
-        return jsonify(booking_inf), 200
+
+        update_booking_status(member_id)  # 狀態改為0，代表刪除
+        return jsonify({"ok": True}), 200
     except Exception:
         return jsonify({"error": True, "message": "伺服器內部錯誤"}), 500
 
 
-def del_booking_inf(token_data):
+""" 訂單付款 """
+
+
+@booking_bp.route('/api/orders', methods=['POST'])
+def corder():
+    try:
+        token_data = validate_token()
+        if token_data is None:
+            return jsonify({"error": True, "message": "未登入系統，拒絕存取"}), 403
+        order_data = request.get_json()
+
+        # 建立訂單號碼
+        order_number = create_order(token_data, order_data)
+        if order_number:
+
+            # 將資訊傳送到TapPay伺服器
+            member_id = token_data.get("id")
+
+            payment_info = process_payment(order_data, order_number, member_id)
+
+            # 將訂單狀態回傳給前端
+            if payment_info:
+                response_data = {
+                    "data": payment_info
+                }
+                return jsonify(response_data), 200
+        else:
+            return jsonify({"error": True, "message": "建立失敗，資料輸入不正確"}), 400
+    except Exception:
+        return jsonify({"error": True, "message": "伺服器內部錯誤"}), 500
+
+
+def create_order(token_data, order_data):
+    # 查詢booking_id
     member_id = token_data.get("id")
-    delete_booking_sql = "DELETE FROM booking WHERE member_id = %s"
-    delete_booking_params = (member_id,)
-    execute_query(connection_pool_TP_data, delete_booking_sql,
-                  delete_booking_params, commit=True)
-    reset_id = "ALTER TABLE booking AUTO_INCREMENT = 1"
-    execute_query(connection_pool_TP_data, reset_id, commit=True)
+    sql = "SELECT id FROM booking WHERE member_id = %s"
+    booking_id = execute_query(
+        connection_pool_TP_data, sql, (member_id,), fetch_one=True)
+
+    while True:  # 確保獨一無二
+        neme = order_data.get("order").get("contact").get("name")
+        email = order_data.get("order").get("contact").get("email")
+
+        # 建立order_number
+        date = order_data.get("order").get("trip").get("date").replace("-", "")
+        phone = order_data.get("order").get("contact").get("phone")
+        random_digits = str(random.randint(10000, 99999))  # 生成五位亂數
+        number = date + phone[-3:] + random_digits
+
+        # 檢查number是否已存在於orders資料表中
+        check_sql = "SELECT COUNT(*) FROM orders WHERE number = %s"
+        count = execute_query(
+            connection_pool_TP_data, check_sql, (number,), fetch_one=True)
+
+        # 如果number不存在，則可以建立number
+        if count[0] == 0:
+            insert_order_sql = "INSERT INTO orders (number, name, email, phone, booking_id) VALUES (%s, %s, %s, %s, %s)"
+            insert_order_params = (number, neme, email,
+                                   phone, booking_id[0])  # booking_id為tuple
+
+            execute_query(connection_pool_TP_data, insert_order_sql,
+                          insert_order_params, commit=True)
+            return number
+
+
+""" TapPay """
+# 適用於 TapPay 的測試環境或正式環境 URL
+TAPPAY_API_URL = "https://sandbox.tappaysdk.com/tpc/payment/pay-by-prime"
+PARTNER_KEY = config('PARTNER_KEY')
+MERCHANT_ID = config('MERCHANT_ID')
+
+# 將資訊傳送到TapPay伺服器
+
+
+def process_payment(order_data, order_number, member_id):
+
+    prime = order_data.get('prime')
+    details = "TapPay Test"
+    order_amount = order_data.get("order").get("price")
+    phone_number = order_data.get("order").get("contact").get("phone")
+    name = order_data.get("order").get("contact").get("name")
+    email = order_data.get("order").get("contact").get("email")
+
+    # 整理成參考文件的格式
+    tappay_request_data = {
+        "prime": prime,
+        "partner_key": PARTNER_KEY,
+        "merchant_id": MERCHANT_ID,
+        "details": details,
+        "amount": order_amount,
+        "cardholder": {
+            "phone_number": phone_number,
+            "name": name,
+            "email": email,
+
+        },
+        "remember": True  # 可選是否記憶卡號
+    }
+
+    headers = {
+        "Content-Type": "application/json",
+        "x-api-key": PARTNER_KEY
+    }
+
+    try:
+        response = requests.post(
+            TAPPAY_API_URL, json=tappay_request_data, headers=headers)
+        if response.status_code == 200:
+            payment_result = response.json()
+            if payment_result.get('status') == 0:  # 狀態為0表示成功
+                # 支付成功，更新訂單狀態改為0
+                update_booking_status(member_id)
+
+                payment_info = {
+                    "number": order_number,
+                    "payment": {
+                        "status": 0,
+                        "message": "付款成功"
+                    }
+                }
+                return payment_info
+
+    except Exception as e:
+        return jsonify(message='Internal server error', error=str(e)), 500
+
+
+def update_booking_status(member_id):
+    sql_update = "UPDATE booking SET status = 0 WHERE member_id = %s"
+    update_params = (member_id,)
+    execute_query(connection_pool_TP_data, sql_update,
+                  update_params, commit=True)
+
+
+# 將config傳送到前端
+@booking_bp.route('/api/config', methods=['GET'])
+def get_config():
+    APP_ID = config("APP_ID")
+    APP_KEY = config("APP_KEY")
+    config_data = {
+        "APP_ID": APP_ID,
+        "APP_KEY": APP_KEY
+    }
+    return jsonify(config_data)

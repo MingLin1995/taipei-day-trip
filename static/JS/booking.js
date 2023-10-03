@@ -12,8 +12,12 @@ window.onload = async function () {
 
     document.getElementById("contactName").value = isLoggedIn.data.name; // 輸入資訊 使用者名稱
     document.getElementById("contactEmail").value = isLoggedIn.data.email; // 輸入資訊 EMAIL
+
+    setupTapPay();
   }
 };
+
+let bookingData = {};
 
 async function fetchBookingInfo() {
   //取得後端傳過來的token
@@ -32,6 +36,16 @@ async function fetchBookingInfo() {
       if (data.error) {
         console.log(data.message);
       } else if (data.data) {
+        bookingData = {
+          price: data.data.price,
+          attractionId: data.data.attraction.id,
+          attractionName: data.data.attraction.name,
+          attractionAddress: data.data.attraction.address,
+          attractionImage: data.data.attraction.image,
+          date: data.data.date,
+          time: data.data.time,
+        };
+
         //如果有訂單資料
         //更新畫面資訊
         const frame1 = document.getElementById("frame1");
@@ -88,14 +102,164 @@ function delButton() {
   })
     .then((response) => response.json())
     .then((data) => {
-      if (data != null) {
-        console.log("刪除失敗");
-      } else {
+      if (data.ok) {
         console.log(data);
         window.location.reload(); //刪除訂單資訊後重新整理頁面
+      } else {
+        console.log("刪除失敗");
       }
     })
     .catch((error) => {
       console.error(error);
+    });
+}
+
+/* -------------------------金流串接---------------------------------- */
+// https://github.com/TapPay/tappay-web-example/tree/master/TapPay_Fields
+
+async function setupTapPay() {
+  try {
+    const config = await get_config();
+    APP_ID = config["APP_ID"];
+    APP_KEY = config["APP_KEY"];
+    TPDirect.setupSDK(APP_ID, APP_KEY, "sandbox");
+
+    var fields = {
+      number: {
+        element: "#card-number",
+        placeholder: "**** **** **** ****",
+      },
+      expirationDate: {
+        element: document.getElementById("card-expiration-date"),
+        placeholder: "MM / YY",
+      },
+      ccv: {
+        element: "#card-ccv",
+        placeholder: "CCV",
+      },
+    };
+
+    TPDirect.card.setup({
+      fields: fields,
+      styles: {
+        // Style all elements
+        input: {
+          color: "gray",
+        },
+        // style valid state
+        ".valid": {
+          color: "green",
+        },
+        // style invalid state
+        ".invalid": {
+          color: "red",
+        },
+        // Media queries
+        // Note that these apply to the iframe, not the root window.
+        "@media screen and (max-width: 400px)": {
+          input: {
+            color: "orange",
+          },
+        },
+      },
+      // 此設定會顯示卡號輸入正確後，會顯示前六後四碼信用卡卡號
+      isMaskCreditCardNumber: true,
+      maskCreditCardNumberRange: {
+        beginIndex: 6,
+        endIndex: 11,
+      },
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+async function get_config() {
+  try {
+    const response = await fetch("/api/config");
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+}
+
+function onSubmit(event) {
+  event.preventDefault();
+
+  // 取得 TapPay Fields 的 status
+  const tappayStatus = TPDirect.card.getTappayFieldsStatus();
+
+  // 確認是否可以 getPrime
+  if (tappayStatus.canGetPrime === false) {
+    alert("卡片資訊輸入錯誤");
+    return;
+  }
+
+  // Get prime
+  TPDirect.card.getPrime((result) => {
+    if (result.status !== 0) {
+      alert("get prime error " + result.msg);
+      return;
+    }
+    //alert("get prime 成功，prime: " + result.card.prime);
+    const prime = result.card.prime;
+
+    // 將prime發送到後端API
+    sendPrimeToBackend(prime);
+  });
+}
+
+function sendPrimeToBackend(prime) {
+  const contactName = document.getElementById("contactName").value;
+  const contactEmail = document.getElementById("contactEmail").value;
+  const contactPhone = document.getElementById("contactPhone").value;
+
+  const orderData = {
+    prime: prime,
+    order: {
+      price: bookingData.price,
+      trip: {
+        attraction: {
+          id: bookingData.attractionId,
+          name: bookingData.attractionName,
+          address: bookingData.attractionAddress,
+          image: bookingData.attractionImage,
+        },
+        date: bookingData.date,
+        time: bookingData.time,
+      },
+      contact: {
+        name: contactName,
+        email: contactEmail,
+        phone: contactPhone,
+      },
+    },
+  };
+
+  const token = localStorage.getItem("token");
+
+  // 使用 Fetch API 發送 POST 請求到後端
+  fetch("/api/orders", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(orderData),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.data.payment.status === 0) {
+        //alert("Payment successful");
+        const orderNumber = data.data.number;
+        window.location.href = `/thankyou?number=${orderNumber}`;
+      } else {
+        alert("Payment failed");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
     });
 }

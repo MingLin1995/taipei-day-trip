@@ -4,7 +4,6 @@ SHOW DATABASES;
 USE TP_data; 
 SHOW TABLES;
 
-# 刪除刪除刪除不要誤點
 /*DROP DATABASE TP_data; */
 
 CREATE TABLE attractions (
@@ -52,13 +51,20 @@ CREATE TABLE booking (
     date DATE,
     time VARCHAR(255),
     price DECIMAL(10),
-    FOREIGN KEY (member_id) REFERENCES member(id)
+    FOREIGN KEY (member_id) REFERENCES member(id),
+	status INT NOT NULL DEFAULT 1
 );
 SELECT * FROM booking;
 
+CREATE TABLE orders (
+    id INT  PRIMARY KEY AUTO_INCREMENT,
+    number VARCHAR(255) NOT NULL,
+	name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL ,
+    phone VARCHAR(255) NOT NULL,
+	booking_id INT NOT NULL
+);
 
+SELECT * FROM orders;
 
-
-
-
-
+/*DROP table booking;*/

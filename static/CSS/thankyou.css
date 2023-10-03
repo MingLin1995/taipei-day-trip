@@ -1,0 +1,25 @@
+.separator {
+  border-bottom: 1px solid #e8e8e8;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.footer.normal {
+  height: 100%;
+  top: 280px;
+  padding-top: 40px;
+  align-items: start;
+}
+
+.h2 {
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
