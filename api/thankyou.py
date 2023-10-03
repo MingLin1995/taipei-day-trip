@@ -1,7 +1,7 @@
 from flask import *
 from model.JWT import validate_token
 from model.database import connection_pool_TP_data,  execute_query
-
+from api.booking import del_booking_inf
 
 # 使用 Blueprint 創建路由
 thankyou_bp = Blueprint('thankyou', __name__)
@@ -25,7 +25,7 @@ def get_booking_inf(orderNumber):
             return jsonify({"data": None}), 404
 
         # 查詢booking資訊
-        sql = "SELECT * FROM booking WHERE member_id = %s"
+        sql = "SELECT * FROM booking WHERE id = %s"
         booking_data = execute_query(
             connection_pool_TP_data, sql, (order_data[6],), fetch_one=True)
 
@@ -63,6 +63,10 @@ def get_booking_inf(orderNumber):
         response_data = {
             "data": new_order_info
         }
+
+        # 刪除booking（因為已經付款，所以沒有待付款訂單）
+        token_data = validate_token()
+        del_booking_inf(token_data)
 
         return jsonify(response_data), 200
     except Exception:

@@ -275,9 +275,6 @@ def update_order_status(order_number):
     update_params = (order_number,)
     execute_query(connection_pool_TP_data, sql_update,
                   update_params, commit=True)
-    # 刪除booking（因為已經付款，所以沒有待付款訂單）
-    token_data = validate_token()
-    del_booking_inf(token_data)
 
 
 # 將config傳送到前端
