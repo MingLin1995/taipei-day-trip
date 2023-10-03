@@ -1,10 +1,9 @@
 SHOW DATABASES; 
-/*CREATE DATABASE TP_data; */
+CREATE DATABASE TP_data; 
 
 USE TP_data; 
 SHOW TABLES;
 
-# 刪除刪除刪除不要誤點
 /*DROP DATABASE TP_data; */
 
 CREATE TABLE attractions (
@@ -56,9 +55,16 @@ CREATE TABLE booking (
 );
 SELECT * FROM booking;
 
+CREATE TABLE orders (
+    id INT  PRIMARY KEY AUTO_INCREMENT,
+    number VARCHAR(255) NOT NULL,
+    status INT NOT NULL DEFAULT 1,
+	name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL ,
+    phone VARCHAR(255) NOT NULL,
+	booking_id INT NOT NULL
+);
 
+SELECT * FROM orders;
 
-
-
-
-
+/*DROP table orders;*/

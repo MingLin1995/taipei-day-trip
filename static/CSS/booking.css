@@ -167,3 +167,17 @@ input {
   align-items: start;
   padding-top: 40px;
 }
+/* --------------------- */
+.tpfield {
+  width: 200px;
+  height: 38px;
+  padding: 10px;
+  border: 1px solid #e8e8e8;
+  border-radius: 5px;
+}
+
+.df {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
