@@ -102,11 +102,11 @@ function delButton() {
   })
     .then((response) => response.json())
     .then((data) => {
-      if (data != null) {
-        console.log("刪除失敗");
-      } else {
+      if (data.ok) {
         console.log(data);
         window.location.reload(); //刪除訂單資訊後重新整理頁面
+      } else {
+        console.log("刪除失敗");
       }
     })
     .catch((error) => {
