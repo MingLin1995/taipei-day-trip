@@ -1,6 +1,6 @@
 from flask import *
 import json
-from model.database import connection_pool_TP_data, execute_query
+from model.database import execute_query
 
 # 使用 Blueprint 創建路由
 attractions_bp = Blueprint('attractions', __name__)
@@ -82,7 +82,7 @@ def get_attractions_data(page, keyword):
         """
         parameter = (offset, items_per_page + 1)
 
-    result = execute_query(connection_pool_TP_data, query, parameter)
+    result = execute_query(query, parameter)
 
     # 用多查詢一筆的方式去判斷是否還有下一頁
     next_page = None
@@ -96,7 +96,7 @@ def get_attractions_data(page, keyword):
         # 將元組轉換為列表，以便修改資料
         row_list = list(row)
         attraction_id = row_list[0]
-        images = get_attraction_images(attraction_id, connection_pool_TP_data)
+        images = get_attraction_images(attraction_id)
         row_list[9] = images
         row_list[7] = float(row_list[7])
         row_list[8] = float(row_list[8])
@@ -124,7 +124,7 @@ def get_attractions_data(page, keyword):
     return response_data
 
 
-def get_attraction_images(attraction_id, connection_pool_TP_data):
+def get_attraction_images(attraction_id):
     image_query = """
     SELECT
         i.image_url
@@ -136,7 +136,7 @@ def get_attraction_images(attraction_id, connection_pool_TP_data):
     parameter = (attraction_id,)
 
     image_results = execute_query(
-        connection_pool_TP_data, image_query, parameter)
+        image_query, parameter)
     images = [image_result[0] for image_result in image_results]
     return images
 
@@ -147,7 +147,7 @@ def get_attraction_images(attraction_id, connection_pool_TP_data):
 @attractions_bp.route("/api/attractions/<int:attractionId>")
 def get_attraction(attractionId):
     try:
-        attraction = get_attraction_data(attractionId, connection_pool_TP_data)
+        attraction = get_attraction_data(attractionId)
         if attraction is not None:
             json_data = json.dumps(attraction)
             response = Response(
@@ -167,10 +167,10 @@ def get_attraction(attractionId):
         return jsonify(error_response), 500
 
 
-def get_attraction_data(attraction_id, connection_pool_TP_data):
+def get_attraction_data(attraction_id):
     # 取得基本資訊
     basic_info = get_basic_attraction_info(
-        attraction_id, connection_pool_TP_data)
+        attraction_id)
 
     if basic_info:
         # 將基本資訊轉換成 JSON 格式
@@ -190,7 +190,7 @@ def get_attraction_data(attraction_id, connection_pool_TP_data):
         }
 
         # 取得圖片資訊
-        images = get_attraction_images(basic_info[0], connection_pool_TP_data)
+        images = get_attraction_images(basic_info[0])
 
         # 將圖片資訊添加到 formatted_info 中
         formatted_info["data"]["images"] = images
@@ -200,7 +200,7 @@ def get_attraction_data(attraction_id, connection_pool_TP_data):
         return None
 
 
-def get_basic_attraction_info(attraction_id, connection_pool_TP_data):
+def get_basic_attraction_info(attraction_id):
     # 取得基本資訊
     query = """
         SELECT
@@ -220,5 +220,5 @@ def get_basic_attraction_info(attraction_id, connection_pool_TP_data):
     """
     parameter = (attraction_id,)
     result = execute_query(
-        connection_pool_TP_data, query, parameter, fetch_one=True)
+        query, parameter, fetch_one=True)
     return result

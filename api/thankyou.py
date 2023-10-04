@@ -1,6 +1,6 @@
 from flask import *
 from model.JWT import validate_token
-from model.database import connection_pool_TP_data,  execute_query
+from model.database import execute_query
 from api.booking import update_booking_status
 
 # 使用 Blueprint 創建路由
@@ -21,7 +21,7 @@ def get_booking_inf(orderNumber):
         # 查詢orders資訊
         sql = "SELECT * FROM orders WHERE number = %s"
         order_data = execute_query(
-            connection_pool_TP_data, sql, (str(orderNumber),), fetch_one=True)
+            sql, (str(orderNumber),), fetch_one=True)
 
         if order_data is None:
             return jsonify({"data": None}), 404
@@ -29,7 +29,7 @@ def get_booking_inf(orderNumber):
         # 查詢booking資訊
         sql = "SELECT * FROM booking WHERE id = %s"
         booking_data = execute_query(
-            connection_pool_TP_data, sql, (order_data[6],), fetch_one=True)
+            sql, (order_data[6],), fetch_one=True)
 
         # 查詢景點資訊
         sql = """
@@ -39,7 +39,7 @@ def get_booking_inf(orderNumber):
             WHERE a.id = %s
         """
         attraction_data = execute_query(
-            connection_pool_TP_data, sql, (booking_data[2],))
+            sql, (booking_data[2],))
 
         new_order_info = {
             "number": str(orderNumber),

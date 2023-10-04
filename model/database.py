@@ -14,7 +14,7 @@ connection_pool_TP_data = mysql.connector.pooling.MySQLConnectionPool(
 """ ---------------------會員系統簡化資料庫溝通流程------------------------ """
 
 
-def execute_query(connection_pool_TP_data, sql, parameter=None, fetch_one=False, commit=False):
+def execute_query(sql, parameter=None, fetch_one=False, commit=False):
     connection = connection_pool_TP_data.get_connection()
     cur = connection.cursor()
 

@@ -1,6 +1,6 @@
 from flask import *
 from model.JWT import validate_token
-from model.database import connection_pool_TP_data,  execute_query
+from model.database import execute_query
 import requests  # pip install requests
 import random
 from decouple import config  # pip install python-decouple 讀取.env
@@ -43,21 +43,21 @@ def create_booking(token_data, booking_data):
     existing_booking_sql = "SELECT id FROM booking WHERE member_id = %s"
     existing_booking_params = (member_id,)
     existing_booking = execute_query(
-        connection_pool_TP_data, existing_booking_sql, existing_booking_params, fetch_one=True)
+        existing_booking_sql, existing_booking_params, fetch_one=True)
 
     if existing_booking:
         # 存在的話先刪除
         delete_booking_sql = "DELETE FROM booking WHERE id = %s"
         delete_booking_params = (existing_booking[0],)
-        execute_query(connection_pool_TP_data, delete_booking_sql,
+        execute_query(delete_booking_sql,
                       delete_booking_params, commit=True)
         reset_id = "ALTER TABLE booking AUTO_INCREMENT = 1"
-        execute_query(connection_pool_TP_data, reset_id, commit=True)
+        execute_query(reset_id, commit=True)
 
     # 新增訂單
     sql = "INSERT INTO booking (member_id, attractionId, date, time, price) VALUES (%s, %s, %s, %s, %s)"
     values = (member_id, attractionId, date, time, price)
-    execute_query(connection_pool_TP_data, sql, values, commit=True)
+    execute_query(sql, values, commit=True)
 
     return True
 
@@ -92,7 +92,7 @@ def find_booking_inf(token_data):
         WHERE b.member_id = %s AND b.status = 1
     """
 
-    result = execute_query(connection_pool_TP_data, sql, (member_id,))
+    result = execute_query(sql, (member_id,))
 
     if result:
         data = result[0]
@@ -177,7 +177,7 @@ def create_order(token_data, order_data):
     member_id = token_data.get("id")
     sql = "SELECT id FROM booking WHERE member_id = %s"
     booking_id = execute_query(
-        connection_pool_TP_data, sql, (member_id,), fetch_one=True)
+        sql, (member_id,), fetch_one=True)
 
     while True:  # 確保獨一無二
         neme = order_data.get("order").get("contact").get("name")
@@ -192,7 +192,7 @@ def create_order(token_data, order_data):
         # 檢查number是否已存在於orders資料表中
         check_sql = "SELECT COUNT(*) FROM orders WHERE number = %s"
         count = execute_query(
-            connection_pool_TP_data, check_sql, (number,), fetch_one=True)
+            check_sql, (number,), fetch_one=True)
 
         # 如果number不存在，則可以建立number
         if count[0] == 0:
@@ -200,7 +200,7 @@ def create_order(token_data, order_data):
             insert_order_params = (number, neme, email,
                                    phone, booking_id[0])  # booking_id為tuple
 
-            execute_query(connection_pool_TP_data, insert_order_sql,
+            execute_query(insert_order_sql,
                           insert_order_params, commit=True)
             return number
 
@@ -269,7 +269,7 @@ def process_payment(order_data, order_number, member_id):
 def update_booking_status(member_id):
     sql_update = "UPDATE booking SET status = 0 WHERE member_id = %s"
     update_params = (member_id,)
-    execute_query(connection_pool_TP_data, sql_update,
+    execute_query(sql_update,
                   update_params, commit=True)
 
 

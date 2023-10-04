@@ -1,5 +1,5 @@
 import json
-import mysql.connector.pooling
+from model.database import execute_query
 
 with open("taipei-attractions.json", "r", encoding="utf-8") as json_file:
     data = json.load(json_file)
@@ -50,33 +50,17 @@ for result in results:
 
 # print(attractions_data[1]["file"][7])  # 確定資料正確
 
-db = {
-    "host": "localhost",
-    "user": "root",
-    "password": "123456",
-    "database": "TP_data",
-    "pool_size": 8
-}
-
-connection_pool = mysql.connector.pooling.MySQLConnectionPool(**db)
-
-connection = connection_pool.get_connection()
-cur = connection.cursor()
 
 for attraction in attractions_data:
     insert_query = "INSERT INTO attractions (name, category, description, address, transport, mrt, lat, lng) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
     values = (attraction["name"], attraction["CAT"], attraction["description"], attraction["address"],
               attraction["direction"], attraction["MRT"], attraction["latitude"], attraction["longitude"])
-    cur.execute(insert_query, values)
+    execute_query(insert_query, values, commit=True)
 
-    # https://cloud.tencent.com/developer/article/1406560
     # 取得最後插入資料的主鍵值
-    attraction_id = cur.lastrowid
+    attraction_id = execute_query("SELECT LAST_INSERT_ID()", fetch_one=True)[0]
+
     for image_url in attraction["file"]:
         insert_image_query = "INSERT INTO images (attraction_id, image_url) VALUES (%s, %s)"
         image_values = (attraction_id, image_url)
-        cur.execute(insert_image_query, image_values)
-
-connection.commit()
-cur.close()
-connection.close()
+        execute_query(insert_image_query, image_values, commit=True)
