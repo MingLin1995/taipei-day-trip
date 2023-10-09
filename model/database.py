@@ -1,10 +1,14 @@
 import mysql.connector.pooling
+from decouple import config
+
+user = config('user')
+password = config('password')
 
 # 資料庫
 db_TP_data = {
     "host": "localhost",
-    "user": "root",
-    "password": "123456",
+    "user": user,
+    "password": password,
     "database": "TP_data",
     "pool_size": 8
 }
