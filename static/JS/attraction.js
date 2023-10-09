@@ -190,6 +190,7 @@ async function submitBooking() {
     } else if (response.status === 400) {
       // 資料輸入不正確
       console.error(data["message"]);
+      alert(data["message"]);
     } else if (response.status === 500) {
       // 伺服器錯誤
       console.error(data["message"]);

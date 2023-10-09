@@ -161,11 +161,13 @@ def corder():
             payment_info = process_payment(order_data, order_number, member_id)
 
             # 將訂單狀態回傳給前端
-            if payment_info:
+            if payment_info and "error" not in payment_info:
                 response_data = {
                     "data": payment_info
                 }
                 return jsonify(response_data), 200
+            else:
+                return jsonify(payment_info), 400
         else:
             return jsonify({"error": True, "message": "建立失敗，資料輸入不正確"}), 400
     except Exception:
@@ -261,6 +263,8 @@ def process_payment(order_data, order_number, member_id):
                     }
                 }
                 return payment_info
+            else:
+                return {"error": True, "message": "付款失敗"}
 
     except Exception as e:
         return jsonify(message='Internal server error', error=str(e)), 500
