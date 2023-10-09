@@ -19,12 +19,12 @@ function getAttraction() {
         throw new Error(responseData["message"]); // 退出then，錯誤訊息傳遞到catch
       }
       data = responseData["data"];
+      //初始化內容
       initializeContent();
       // 在資料載入後，預先載入所有圖片
       preloadImages(data.images).then(() => {
         const loadingSpinner = document.querySelector(".loading-spinner");
         const imagesElement = document.querySelector(".images");
-
         loadingSpinner.style.display = "none"; // 隱藏載入中效果
         imagesElement.style.display = "block";
       });
@@ -34,19 +34,8 @@ function getAttraction() {
     });
 }
 
-// 預先載入圖片
-function preloadImages(imageUrls) {
-  const promises = [];
-  for (const imageUrl of imageUrls) {
-    const image = new Image();
-    image.src = imageUrl;
-    const promise = new Promise((resolve) => {
-      image.onload = resolve;
-    });
-    promises.push(promise);
-  }
-  return Promise.all(promises);
-}
+// 初始化為第一張圖片
+let imgIndex = 0;
 
 // 需要更新內容的部分，用物件打包起來
 const elements = {
@@ -61,9 +50,6 @@ const elements = {
   transport: document.querySelector(".transport"),
   circleContainer: document.querySelector(".circle-container"),
 };
-
-// 初始化為第一張圖片
-let imgIndex = 0;
 
 //初始化內容
 function initializeContent() {
@@ -84,6 +70,20 @@ function initializeContent() {
         : "../static/IMG/circle_current.png";
     elements.circleContainer.appendChild(circleImg);
   });
+}
+
+// 預先載入圖片
+function preloadImages(imageUrls) {
+  const promises = [];
+  for (const imageUrl of imageUrls) {
+    const image = new Image();
+    image.src = imageUrl;
+    const promise = new Promise((resolve) => {
+      image.onload = resolve;
+    });
+    promises.push(promise);
+  }
+  return Promise.all(promises);
 }
 
 // 更新顯示的圖片
@@ -129,7 +129,6 @@ function timeButton(buttonClass) {
     buttonClass === "am_btn" ? "新台幣2,000元" : "新台幣2,500元";
 
   /* 不能同時選擇兩種時間 */
-
   // 如果當下選擇am，則otherClass就等於pm_btn
   const timeClass = buttonClass === "am_btn" ? "pm_btn" : "am_btn";
   //選擇對應的按鈕
