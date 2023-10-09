@@ -34,7 +34,7 @@ body {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.3); /* 半透明的灰色 */
-  z-index: 3;
+  z-index: 6;
 }
 
 /* 登入視窗 */
@@ -46,7 +46,7 @@ body {
   width: 340px;
   height: 275px;
   background-color: #ffffff;
-  z-index: 4;
+  z-index: 7;
   box-shadow: 0px 4px 60px 0px #aaaaaa; /*外陰影*/
   border-radius: 6px;
   overflow: hidden;
@@ -125,7 +125,7 @@ body {
   position: sticky;
   top: 0; /* 固定在最上面 */
   background-color: #ffffff;
-  z-index: 2; /* 在所有層級之上 */
+  z-index: 5; /* 在所有層級之上 */
   width: 100%;
 }
 
