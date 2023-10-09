@@ -3,6 +3,7 @@ import random
 import requests  # pip install requests
 from model.booking import update_booking_status
 from decouple import config  # pip install python-decouple 讀取.env
+from flask import jsonify
 
 """ 訂單付款 """
 
