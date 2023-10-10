@@ -28,14 +28,31 @@
   object-position: center; /* 在容器内居中显示 */
   border-radius: 5px;
   position: relative;
+  display: none;
 }
+
+.loading-spinner {
+  width: 100%;
+  height: 400px;
+  object-fit: cover; /* 保持长宽比，不失真 */
+  object-position: center; /* 在容器内居中显示 */
+  z-index: 3; /* 確保在最上層 */
+  position: relative;
+}
+@media (max-width: 1200px) {
+  .loading-spinner {
+    height: 100%;
+  }
+}
+
 .w540 {
   width: calc((100% - 60px) * 540 / 1140); /*15px*4=60px*/
 }
 
 .basic img {
-  transition: 0.7s ease-in-out;
+  transition: 0.5s ease-in-out;
 }
+
 .circle-container {
   position: absolute;
   bottom: 10px;

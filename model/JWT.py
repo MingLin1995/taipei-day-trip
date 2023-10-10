@@ -1,5 +1,5 @@
 from flask import *
-from model.database import connection_pool_TP_data, execute_query
+from model.database import execute_query
 import jwt  # pip install pyjwt
 
 
@@ -28,7 +28,7 @@ def validate_token():
 
 def check_token(id, token):
     sql = "SELECT token FROM token WHERE member_id = %s"
-    result = execute_query(connection_pool_TP_data, sql, (id,), fetch_one=True)
+    result = execute_query(sql, (id,), fetch_one=True)
     # 如果有token且與回傳token相符
     if result and result[0] == token:
         return True

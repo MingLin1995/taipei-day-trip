@@ -18,7 +18,7 @@ window.onload = async function () {
 };
 
 let bookingData = {};
-
+/* 取得訂單資訊，初始畫面顯示 */
 async function fetchBookingInfo() {
   //取得後端傳過來的token
   const token = localStorage.getItem("token");
@@ -90,7 +90,7 @@ async function fetchBookingInfo() {
     console.error(error);
   }
 }
-
+/* 刪除訂單 */
 function delButton() {
   const token = localStorage.getItem("token");
   const apiUrl = "/api/booking";
@@ -185,15 +185,45 @@ async function get_config() {
   }
 }
 
+/* 驗證資料格式，取得Prime */
 function onSubmit(event) {
   event.preventDefault();
 
+  const contactName = document.getElementById("contactName").value;
+  const contactEmail = document.getElementById("contactEmail").value;
+  const contactPhone = document.getElementById("contactPhone").value;
+
+  // 檢查是否有空白輸入
+  if (
+    contactName.trim() === "" ||
+    contactEmail.trim() === "" ||
+    contactPhone.trim() === ""
+  ) {
+    alert("請輸入完整的聯絡資訊");
+    return;
+  }
+
+  // 驗證格式
+  if (!isValidName(contactName)) {
+    alert("姓名格式不正確，請輸入中文或英文，至少兩個字元");
+    return;
+  }
+
+  if (!isValidEmail(contactEmail)) {
+    alert("email格式不正確，請輸入正確的email");
+    return;
+  }
+
+  if (!isValidPhone(contactPhone)) {
+    alert("手機號碼格式不正確");
+    return;
+  }
+
   // 取得 TapPay Fields 的 status
   const tappayStatus = TPDirect.card.getTappayFieldsStatus();
-
   // 確認是否可以 getPrime
   if (tappayStatus.canGetPrime === false) {
-    alert("卡片資訊輸入錯誤");
+    alert("請輸入完整的信用卡資訊");
     return;
   }
 
@@ -206,11 +236,31 @@ function onSubmit(event) {
     //alert("get prime 成功，prime: " + result.card.prime);
     const prime = result.card.prime;
 
-    // 將prime發送到後端API
+    // 整理發送至後端資料格式
     sendPrimeToBackend(prime);
   });
 }
 
+/* 驗證資料格式 */
+function isValidName(contactName) {
+  // 姓名格式驗證，只能是中文、英文或空格，至少兩個字元
+  const namePattern = /^[\u4e00-\u9fa5A-Za-z\s]{2,}$/;
+  return namePattern.test(contactName);
+}
+
+function isValidEmail(contactEmail) {
+  // email格式驗證
+  const emailPattern = /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/;
+  return emailPattern.test(contactEmail);
+}
+
+function isValidPhone(contactPhone) {
+  // 手機格式驗證
+  const phonePattern = /^[0-9]{10}$/;
+  return phonePattern.test(contactPhone);
+}
+
+/* 整理發送至後端資料格式 */
 function sendPrimeToBackend(prime) {
   const contactName = document.getElementById("contactName").value;
   const contactEmail = document.getElementById("contactEmail").value;
@@ -238,9 +288,8 @@ function sendPrimeToBackend(prime) {
     },
   };
 
+  /* 發送到後端驗證金流，取得訂單號碼，轉跳完成頁面 */
   const token = localStorage.getItem("token");
-
-  // 使用 Fetch API 發送 POST 請求到後端
   fetch("/api/orders", {
     method: "POST",
     headers: {

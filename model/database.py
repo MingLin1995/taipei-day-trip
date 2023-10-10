@@ -1,10 +1,14 @@
 import mysql.connector.pooling
+from decouple import config
+
+user = config('user')
+password = config('password')
 
 # 資料庫
 db_TP_data = {
     "host": "localhost",
-    "user": "root",
-    "password": "123456",
+    "user": user,
+    "password": password,
     "database": "TP_data",
     "pool_size": 8
 }
@@ -14,7 +18,7 @@ connection_pool_TP_data = mysql.connector.pooling.MySQLConnectionPool(
 """ ---------------------會員系統簡化資料庫溝通流程------------------------ """
 
 
-def execute_query(connection_pool_TP_data, sql, parameter=None, fetch_one=False, commit=False):
+def execute_query(sql, parameter=None, fetch_one=False, commit=False):
     connection = connection_pool_TP_data.get_connection()
     cur = connection.cursor()
 

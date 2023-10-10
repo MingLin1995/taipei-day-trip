@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 <!-- title -->
-<title>{% block title %}預定頁面{% endblock %}</title>
+<title>{% block title %}預訂行程｜台北一日遊{% endblock %}</title>
 <!-- CSS -->
 {% block CSS %}
 <link rel="stylesheet" href="../static/CSS/booking.css" />
@@ -11,7 +11,7 @@
 
 <div class="container max-width" id="frame1">
   <div class="headline w100 h3 p10">
-    您好，<span class="userName">XXX</span>，待預訂的行程如下：
+    您好，<span class="userName"></span>，待預訂的行程如下：
   </div>
   <div class="empty p10">目前沒有任何待預定的行程</div>
 </div>
@@ -29,21 +29,17 @@
     />
     <img src="../static/IMG/welcome.jpg" alt="" class="picture" id="image" />
     <div class="infor">
-      <div class="title">台北一日遊：<span id="name">XXXXXXX</span></div>
+      <div class="title">台北一日遊：<span id="name"></span></div>
       <div class="mb10">
-        <span class="h4">日期：</span><span id="date">XXXX</span>
-      </div>
-      <div class="mb10">
-        <span class="h4">時間：</span
-        ><span id="time">早上 9 點到下午 4 點</span>
+        <span class="h4">日期：</span><span id="date"></span>
       </div>
       <div class="mb10">
-        <span class="h4">費用：</span><span id="price">新台幣 2,000 元</span>
+        <span class="h4">時間：</span><span id="time"></span>
       </div>
-      <div>
-        <span class="h4">地點：</span
-        ><span id="address">臺北市大安區忠孝東路 4段XXXX</span>
+      <div class="mb10">
+        <span class="h4">費用：</span><span id="price"></span>
       </div>
+      <div><span class="h4">地點：</span><span id="address"></span></div>
       <img
         src="../static/IMG/delete.png"
         alt=""
@@ -89,7 +85,7 @@
   </div>
   <div class="separator .max-width mb40"></div>
   <div class="confirm w100 pl110 p10">
-    <p class="h4">總價：<span id="priceText">新台幣 2,000 元</span></p>
+    <p class="h4">總價：<span id="priceText"></span></p>
     <div class="booking" onclick="onSubmit(event)">確認訂購並付款</div>
   </div>
 </div>

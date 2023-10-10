@@ -162,8 +162,18 @@ function loadAttractions(page, keyword) {
 
           //img
           const img = document.createElement("img");
-          img.src = attraction["images"][0];
+          img.src = "../static/IMG/loading.gif";
           attractionItem.appendChild(img);
+
+          // 預載入景點圖片
+          const attractionImage = new Image();
+          attractionImage.src = attraction["images"][0];
+
+          // 監聽景點圖片載入事件
+          attractionImage.onload = function () {
+            // 當圖片載入完成時，設定img的src，覆蓋loading圖片
+            img.src = attractionImage.src;
+          };
 
           //.detail-1
           const detail1 = document.createElement("div");
