@@ -1,4 +1,4 @@
-from flask import *
+from flask import *  # pip install flask
 from flask_cors import CORS  # 處理跨域問題 pip install flask-cors
 # 導入 api/attractions.py 中的 attractions_bp
 from api.attractions import attractions_bp

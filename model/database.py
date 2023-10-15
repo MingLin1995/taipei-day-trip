@@ -1,5 +1,5 @@
-import mysql.connector.pooling
-from decouple import config
+import mysql.connector.pooling  # pip install mysql-connector-python
+from decouple import config  # pip install python-decouple
 
 user = config('user')
 password = config('password')
